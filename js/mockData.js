@@ -1,310 +1,212 @@
 /* ==========================================================================
-   AutoGTM - Realistic Initial Seed Data
+   Rabbit - Realistic Seed Data (Explee Autonomous Agent Pipeline)
    ========================================================================== */
 
 import { AGENT_IDS } from './types.js';
 
 export const initialAgents = [
   {
-    id: AGENT_IDS.ATLAS,
-    name: 'Atlas',
-    role: 'Market Intelligence & ICP Crawler',
-    avatar: '🌐',
+    id: AGENT_IDS.KODA,
+    name: 'Koda',
+    role: 'Domain & Offer Intelligence',
+    avatar: '🔍',
     color: '#06B6D4',
     status: 'Active',
-    efficiency: '99.4%',
-    actionsToday: 1420,
-    currentTask: 'Analyzing funding signals for Series A-B FinTech startups adopting AI infrastructure...',
-    thoughtStream: 'Detected 14 tech companies hiring VP of Sales with active Snowflake + Kubernetes tech stack.'
+    efficiency: '99.8%',
+    actionsToday: 1840,
+    currentTask: 'Analyzing larksilk.com: "Wholesale silk flowers & greenery for hotels & florists (45+ yrs)"...',
+    thoughtStream: 'Studying competitors: afloral.com, nearlynatural.com, silksareforever.com. Extracted value prop: "Bulk silk boxes shipped from NJ save 60% vs fresh flowers".'
+  },
+  {
+    id: AGENT_IDS.ATLAS,
+    name: 'Atlas',
+    role: 'ICP & Fit Score Segmenter',
+    avatar: '📊',
+    color: '#6366F1',
+    status: 'Active',
+    efficiency: '99.2%',
+    actionsToday: 1290,
+    currentTask: 'Calculating ICP fit scores across 5 market verticals...',
+    thoughtStream: 'Event Designers (92% fit, $1.69/lead), Wedding Floral Studios (88% fit), Country Clubs (79% fit). Paused low-converting Property Management.'
   },
   {
     id: AGENT_IDS.NOVA,
     name: 'Nova',
-    role: 'Lead Sourcing & Intent Scorer',
+    role: '536M+ Contact Sourcing',
     avatar: '🎯',
-    color: '#6366F1',
+    color: '#EC4899',
     status: 'Active',
-    efficiency: '98.8%',
-    actionsToday: 890,
-    currentTask: 'Verifying work emails and mobile numbers for 45 newly scraped CTOs & Heads of Product...',
-    thoughtStream: 'Intent score computed: 94/100 for Sarah Lin (CTO at Datavolt) due to recent SOC2 compliance job postings.'
+    efficiency: '98.9%',
+    actionsToday: 940,
+    currentTask: 'Querying GPU cluster covering 536M+ people profiles for verified owners & lead designers...',
+    thoughtStream: 'Discovered Rachel Whitfield (Owner @ Sweet Pea Events), Dana Okafor (Lead Designer @ Tupelo Honey). Email verification rate: 100%.'
   },
   {
     id: AGENT_IDS.PULSE,
     name: 'Pulse',
-    role: 'Hyper-Personalized Copywriter',
+    role: '1:1 Hyper-Personalized Emailer',
     avatar: '✍️',
-    color: '#EC4899',
-    status: 'Active',
-    efficiency: '97.6%',
-    actionsToday: 640,
-    currentTask: 'Drafting tailored 3-step email & LinkedIn outreach sequence targeting B2B SaaS Founders...',
-    thoughtStream: 'Synthesized value prop matching prospect recent podcast mention on lowering API latency.'
-  },
-  {
-    id: AGENT_IDS.VELOCITY,
-    name: 'Velocity',
-    role: 'Omnichannel Drip Executor',
-    avatar: '⚡',
     color: '#A855F7',
     status: 'Active',
-    efficiency: '99.9%',
-    actionsToday: 2150,
-    currentTask: 'Executing automated Step 2 LinkedIn connection request drip with personalized node...',
-    thoughtStream: 'Dispatched 38 emails with 100% SPF/DKIM verification. Delivery rate: 100%.'
+    efficiency: '97.9%',
+    actionsToday: 710,
+    currentTask: 'Synthesizing context-aware email for Dana Okafor (Tupelo Honey Flower)...',
+    thoughtStream: 'Drafted note referencing Tupelo Honey full-scale event installs & venue lighting durability benefits.'
   },
   {
     id: AGENT_IDS.ECHO,
     name: 'Echo',
-    role: 'Objection AI & Meeting Booker',
+    role: 'Objection AI & Auto-Booker',
     avatar: '💬',
     color: '#F59E0B',
     status: 'Active',
-    efficiency: '96.2%',
-    actionsToday: 320,
-    currentTask: 'Analyzing inbound response from Marcus Vance (Head of Growth at CloudScale)...',
-    thoughtStream: 'Classified reply as "Pricing Objection". Generated counter-argument showcasing 4.2x ROI case study.'
+    efficiency: '96.5%',
+    actionsToday: 410,
+    currentTask: 'Evaluating inbound question from Dana: "How do these hold up under venue lighting?"...',
+    thoughtStream: 'Replied detailing flame-retardant UV silk specs. Auto-dispatched invite for Tuesday 2:00 PM.'
   },
   {
     id: AGENT_IDS.APEX,
     name: 'Apex',
-    role: 'GTM Strategy & Self-Optimizer',
+    role: 'Pipeline Scaler & Double-Down AI',
     avatar: '🧠',
     color: '#10B981',
     status: 'Active',
-    efficiency: '99.1%',
-    actionsToday: 180,
-    currentTask: 'Evaluating Subject Line Variant B performance vs Variant A across 400 delivered messages...',
-    thoughtStream: 'Variant B ("Quick thought on [Company]\'s AI pipeline") achieved +23.4% higher open rate. Auto-promoting to primary.'
+    efficiency: '99.6%',
+    actionsToday: 240,
+    currentTask: 'Doubling down on Event Designers vertical ($1.69 CAC)...',
+    thoughtStream: 'Re-allocated 40% daily outreach budget from low-performing Houses of Worship to Event Designers.'
   }
 ];
 
 export const initialCampaigns = [
   {
-    id: 'camp-1',
-    name: 'Q3 Enterprise AI Infrastructure Outreach',
-    targetICP: 'Series A-C Tech Companies (50-250 employees)',
-    valueProposition: 'Automate high-intent outbound prospecting and reduce customer acquisition costs by 60%.',
-    status: 'Active (Autonomous)',
-    budgetAllocated: '$2,400 / mo',
-    leadsTargeted: 450,
-    contacted: 312,
-    replies: 48,
-    meetingsBooked: 14,
-    conversionRate: '4.48%',
-    channels: ['Email', 'LinkedIn', 'X DM']
-  },
-  {
-    id: 'camp-2',
-    name: 'FinTech SOC2 & Security Leaders Drive',
-    targetICP: 'FinTech & Banking API Providers (100-500 employees)',
-    valueProposition: 'Self-operating compliance prospect intelligence and automated decision-maker engagement.',
-    status: 'Active (Autonomous)',
+    id: 'camp-explee-1',
+    name: 'Wholesale Silk Flowers — Event Designers & Studios',
+    targetICP: 'Event Designers, Wedding Floral Studios & Planners',
+    valueProposition: 'Premium silk by the box shipped from NJ—one buy carries across events with zero wilting under venue lights.',
+    status: 'Scaling (Autonomous)',
     budgetAllocated: '$1,800 / mo',
-    leadsTargeted: 280,
-    contacted: 195,
-    replies: 34,
-    meetingsBooked: 9,
-    conversionRate: '4.61%',
-    channels: ['Email', 'LinkedIn']
+    leadsTargeted: 580,
+    contacted: 412,
+    replies: 68,
+    meetingsBooked: 22,
+    conversionRate: '5.34%',
+    channels: ['Email (Pre-warmed)']
   }
 ];
 
 export const initialLeads = [
   {
-    id: 'lead-1',
-    name: 'Sarah Lin',
-    title: 'CTO & Co-Founder',
-    company: 'DataVolt AI',
-    industry: 'Data Infrastructure',
-    employees: '85',
-    email: 'sarah.lin@datavolt.ai',
-    phone: '+1 (415) 892-3019',
-    linkedin: 'linkedin.com/in/sarahlin-tech',
+    id: 'lead-ex-1',
+    name: 'Dana Okafor',
+    title: 'Lead Designer',
+    company: 'Tupelo Honey Flower',
+    industry: 'Floral Design & Events',
+    employees: '24',
+    email: 'dana@tupelohoneyflower.com',
+    phone: '+1 (415) 302-8819',
+    linkedin: 'linkedin.com/in/dana-okafor-design',
     stage: 'meeting_booked',
     intentScore: 94,
-    buyingSignals: ['Hiring 4 ML Engineers', 'Raised $14M Series A', 'Evaluating LLM Tooling'],
-    lastActivity: 'Accepted meeting invite for Aug 12, 2:00 PM EST',
+    buyingSignals: ['Executes full-scale event installs', 'High monthly floral expense'],
+    lastActivity: 'Demo booked: Tue 14:00 EST (Confirmed by Echo)',
     history: [
-      { time: '10 mins ago', text: 'Echo (AI) automatically sent Calendly link after handling pricing question.' },
-      { time: '2 hours ago', text: 'Sarah replied: "Sounds interesting. What does pricing look like for 50 seats?"' },
-      { time: '1 day ago', text: 'Velocity executed Email Step 1 (Personalized intro mentioning Series A).' }
+      { time: '5 mins ago', text: 'Echo (AI) auto-booked Tuesday 2pm demo after answering venue lighting question.' },
+      { time: '35 mins ago', text: 'Dana replied: "Interesting, can you do Tuesday 2pm?"' },
+      { time: '1 day ago', text: 'Pulse sent 1:1 email referencing Tupelo Honey install projects.' }
     ]
   },
   {
-    id: 'lead-2',
-    name: 'Marcus Vance',
-    title: 'VP of Growth',
-    company: 'CloudScale Systems',
-    industry: 'DevOps & Cloud',
-    employees: '160',
-    email: 'm.vance@cloudscalesystems.io',
-    phone: '+1 (650) 412-9901',
-    linkedin: 'linkedin.com/in/marcus-vance-growth',
+    id: 'lead-ex-2',
+    name: 'Rachel Whitfield',
+    title: 'Owner & Creative Director',
+    company: 'Sweet Pea Events',
+    industry: 'Wedding & Corporate Events',
+    employees: '18',
+    email: 'rachel@sweetpeaevents.com',
+    phone: '+1 (212) 890-4412',
+    linkedin: 'linkedin.com/in/rachel-whitfield-events',
     stage: 'engaged',
-    intentScore: 88,
-    buyingSignals: ['Tech stack changed to Snowflake', 'Active on X discussing GTM scaling'],
-    lastActivity: 'Replied: "Is this fully integrated with HubSpot?"',
+    intentScore: 91,
+    buyingSignals: ['Scaling luxury wedding package', 'Evaluating bulk decor suppliers'],
+    lastActivity: 'Replied: "Can you send a sample box to our NYC studio?"',
     history: [
-      { time: '25 mins ago', text: 'Echo drafted response detailing native bi-directional HubSpot sync.' },
-      { time: '4 hours ago', text: 'Marcus opened Email Step 2 (3rd time open).' }
+      { time: '15 mins ago', text: 'Echo drafted sample box dispatch confirmation & Calendly link.' },
+      { time: '2 hours ago', text: 'Rachel opened email (3rd open).' }
     ]
   },
   {
-    id: 'lead-3',
-    name: 'Elena Rostova',
-    title: 'Head of Sales Operations',
-    company: 'FinPulse Tech',
-    industry: 'FinTech',
-    employees: '210',
-    email: 'elena.rostova@finpulse.com',
-    phone: '+1 (212) 554-0192',
-    linkedin: 'linkedin.com/in/elenarostova',
+    id: 'lead-ex-3',
+    name: 'Mia Castellanos',
+    title: 'Founder',
+    company: 'The Bloom Lab',
+    industry: 'Event Floral Studio',
+    employees: '12',
+    email: 'mia@thebloomlab.co',
+    phone: '+1 (312) 667-9021',
+    linkedin: 'linkedin.com/in/miacastellanos-bloom',
     stage: 'contacted',
-    intentScore: 79,
-    buyingSignals: ['Expanded SDR team', 'High employee growth rate (+35%)'],
-    lastActivity: 'LinkedIn Connection Request Sent with custom note by Velocity',
+    intentScore: 88,
+    buyingSignals: ['Hiring 2 Floral Stylists', 'Expanded studio location'],
+    lastActivity: 'Pulse dispatched personal email mentioning NJ box shipping benefit',
     history: [
-      { time: '3 hours ago', text: 'Pulse auto-generated personalized LinkedIn invitation.' },
-      { time: '1 day ago', text: 'Nova enriched lead score from 65 -> 79 based on new hiring data.' }
-    ]
-  },
-  {
-    id: 'lead-4',
-    name: 'David K. Chen',
-    title: 'Chief Revenue Officer',
-    company: 'NexusFlow',
-    industry: 'Enterprise Software',
-    employees: '340',
-    email: 'david.chen@nexusflow.dev',
-    phone: '+1 (408) 773-9021',
-    linkedin: 'linkedin.com/in/davidkchen-cro',
-    stage: 'enriched',
-    intentScore: 82,
-    buyingSignals: ['Replaced legacy CRM', 'Attended Gartner GTM Summit'],
-    lastActivity: 'Nova verified work email with 99% deliverability confidence',
-    history: [
-      { time: '5 hours ago', text: 'Atlas identified profile matching ICP filter: CRO at Mid-market SaaS.' }
-    ]
-  },
-  {
-    id: 'lead-5',
-    name: 'Amara Okafor',
-    title: 'Director of Product Marketing',
-    company: 'Synthetix Cloud',
-    industry: 'AI Platforms',
-    employees: '95',
-    email: 'amara@synthetix.cloud',
-    phone: '+1 (312) 991-4402',
-    linkedin: 'linkedin.com/in/amara-okafor-pmm',
-    stage: 'discovered',
-    intentScore: 71,
-    buyingSignals: ['Launched new product line', 'Evaluating outbound automation'],
-    lastActivity: 'Atlas crawled job board posting for GTM Specialist',
-    history: [
-      { time: '6 hours ago', text: 'Atlas indexed company domain and enriched tech stack.' }
+      { time: '4 hours ago', text: 'Nova enriched verified work email & phone number.' }
     ]
   }
 ];
 
 export const initialSequences = [
   {
-    id: 'seq-1',
+    id: 'seq-ex-1',
     stepNumber: 1,
-    channel: 'Email',
+    channel: 'Pre-Warmed Email',
     delay: 'Day 1 (Immediate)',
-    subject: 'Quick question regarding {{company}}\'s outbound growth',
+    subject: 'Larksilk x {{company}}',
     body: `Hi {{first_name}},
 
-Noticed {{company}} recently expanded your team and launched {{buying_signal}}. Congrats on the momentum!
+Saw {{company}} designs full-scale event installs. At that pace, fresh florals get expensive fast and wilt under venue lights. Larksilk ships premium silk by the box from NJ, so one buy carries across events.
 
-Most {{title}}s we work with spend 20+ hours a week manually researching target accounts and crafting cold copy. Our autonomous AI workforce operates 24/7—sourcing high-intent ICP leads, writing tailored 1:1 copy, and booking qualified meetings directly on your calendar.
-
-Would you be open to seeing a 2-minute live breakdown of how our agents handle GTM for tech teams like yours?
+Want a sample box to compare against your last fresh order?
 
 Best regards,
-Rabbit Autonomous Agent Workforce`,
-    metrics: { sent: 312, opened: '68.4%', clicked: '24.1%', replied: '14.2%' }
-  },
-  {
-    id: 'seq-2',
-    stepNumber: 2,
-    channel: 'LinkedIn',
-    delay: 'Day 3 (+48 hours)',
-    subject: 'LinkedIn Connection Request',
-    body: `Hi {{first_name}}, saw your recent post regarding {{buying_signal}} at {{company}}. Impressive growth! Would love to connect and share insights on autonomous AI GTM strategies.`,
-    metrics: { sent: 195, accepted: '42.6%', replied: '18.9%' }
-  },
-  {
-    id: 'seq-3',
-    stepNumber: 3,
-    channel: 'Email (Follow-up)',
-    delay: 'Day 5 (+96 hours)',
-    subject: 'Re: Quick question regarding {{company}}\'s outbound growth',
-    body: `Hi {{first_name}},
-
-Following up on my note earlier. We just published a quick breakdown of how an AI agent workforce generated 42 qualified meetings for a Series A SaaS company in 14 days without human intervention.
-
-Here is the direct case study link: autogtm.ai/case-studies/series-a-roi
-
-Let me know if Wednesday afternoon works for a quick 10-minute demo!`,
-    metrics: { sent: 140, opened: '59.1%', clicked: '31.5%', replied: '11.8%' }
+Rabbit Autonomous Agent Workforce (Powered by Explee)`,
+    metrics: { sent: 412, opened: '74.2%', clicked: '34.8%', replied: '16.5%' }
   }
 ];
 
 export const initialInboxMessages = [
   {
-    id: 'msg-1',
-    leadName: 'Marcus Vance',
-    company: 'CloudScale Systems',
-    sentimentKey: 'OBJECTION_PRICING',
-    leadMessage: 'Hi Rabbit team, thanks for reaching out. We like the autonomous agent idea, but our budget for new sales software is tight until Q4. What is the standard starting tier?',
-    aiAnalysis: 'Prospect shows real interest but raises upfront budget objection. Atlas computed prospect ARR at $12M.',
-    aiProposedReply: `Hi Marcus,
-
-Completely understand budget cycles! Many growth leaders we partner with were in the exact same position before realizing Rabbit replaces 3 legacy software subscriptions (saving ~$1,800/mo immediately).
-
-We offer flexible usage-based rollout tiers starting at $490/mo with zero annual contract commitment.
-
-Would you be open to a quick 10-min overview this Thursday to see if the immediate ROI makes sense for Q3? Here is my instant booking link: rabbit.ai/book/marcus`,
-    status: 'AI Counter-Drafted (Ready to Send)'
-  },
-  {
-    id: 'msg-2',
-    leadName: 'Dr. Aris Thorne',
-    company: 'CyberShield Systems',
+    id: 'msg-ex-1',
+    leadName: 'Dana Okafor',
+    company: 'Tupelo Honey Flower',
     sentimentKey: 'INTERESTED',
-    leadMessage: 'This caught my attention. Does your autonomous agent integrate directly with Salesforce CRM and custom webhooks?',
-    aiAnalysis: 'High intent prospect asking technical integration question. Nova confirmed Salesforce stack in use.',
-    aiProposedReply: `Hi Dr. Thorne,
+    leadMessage: 'How do these hold up under venue lighting? Also, can you do Tuesday 2pm for a quick call?',
+    aiAnalysis: 'Prospect asked about venue light durability and proposed Tuesday 2pm time slot.',
+    aiProposedReply: `Hi Dana,
 
-Yes, absolutely! Rabbit features native bi-directional synchronization with Salesforce CRM, HubSpot, and custom REST Webhooks. Every agent action, enriched lead data, and meeting booking syncs automatically.
+Our silk florals are UV and flame-retardant treated, so they hold up crisp under intense venue spotlights without fading or wilting.
 
-I can set up a live integration demo for you tomorrow at 2:00 PM EST. Shall I lock in that slot?`,
-    status: 'AI Replied & Meeting Link Dispatched'
+Tuesday 2pm EST works perfectly! I just dispatched the calendar invite to dana@tupelohoneyflower.com.
+
+Talk then!`,
+    status: 'AI Replied & Calendar Invite Sent'
   }
 ];
 
 export const initialOptimizationLogs = [
   {
-    id: 'opt-1',
-    time: '12 mins ago',
+    id: 'opt-ex-1',
+    time: '10 mins ago',
     agent: 'Apex',
-    type: 'A/B Testing Winner',
-    description: 'Subject line "Quick thought on {{company}}\'s outbound" beat "Streamline your sales process" (+26.8% open rate boost across 500 emails).'
+    type: 'Vertical Scaling',
+    description: 'Event Designers vertical scaled ($1.69/lead, 92% fit score). Paused low-converting Property Management ($5.80/lead).'
   },
   {
-    id: 'opt-2',
+    id: 'opt-ex-2',
     time: '1 hour ago',
     agent: 'Apex',
-    type: 'Channel Reallocation',
-    description: 'Reallocated 25% daily outreach volume from Cold Email to LinkedIn InMail due to +34% higher response rate on FinTech buyer persona.'
-  },
-  {
-    id: 'opt-3',
-    time: '3 hours ago',
-    agent: 'Apex',
-    type: 'Tone Adjustment',
-    description: 'Shifted Pulse agent copy tone from "Formal Corporate" to "Direct Founder-to-Founder", yielding +14.2% reply rate.'
+    type: 'Domain Warming',
+    description: '100% inbox delivery rate across 412 emails using pre-warmed domain infrastructure.'
   }
 ];

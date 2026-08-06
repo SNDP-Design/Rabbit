@@ -8,22 +8,28 @@
 
 ---
 
-## 🌐 Autonomous AI Workforce Matrix
+## 🌐 Explee-Powered Autonomous AI Workforce
 
-Rabbit operates with 6 specialized AI agents working together in an integrated data mesh:
+Rabbit turns Explee's product pipeline into a 24/7 self-operating workforce of 6 specialized AI agents:
 
-1. **🌐 Atlas (Market Intelligence & ICP Crawler)**:
-   - Crawls hiring triggers, funding signals ($5M+ Series A-C), and technology stack adoptions (Snowflake, Kubernetes, Salesforce).
-2. **🎯 Nova (Lead Sourcing & Intent Scorer)**:
-   - Discovers decision-makers (CTOs, CROs, VPs of Sales), verifies email & phone deliverability, and scores intent (0-100).
-3. **✍️ Pulse (Hyper-Personalized Copywriter)**:
-   - Synthesizes 1:1 tailored messaging across Email, LinkedIn connection notes, and X DMs using real-time prospect signals.
-4. **⚡ Velocity (Omnichannel Drip Executor)**:
-   - Executes multi-channel delivery workflows with warm-up IP pools, tracking opens, clicks, and reply rates.
+1. **🔍 Koda (Domain & Offer Intelligence)**:
+   - *Explee Feature: "Learns what you sell"*
+   - Paste any website URL (e.g. `larksilk.com`), and Koda automatically studies your product offering, analyzes competitor domains (afloral.com, nearlynatural.com), and synthesizes your core value proposition in 60 seconds.
+2. **📊 Atlas (ICP & Fit Score Segmenter)**:
+   - *Explee Feature: "Figures out who buys it"*
+   - Computes real-time ICP Fit Scores across market verticals (Event Designers 92%, Wedding Floral Studios 88%, Wedding Planners 85%).
+3. **🎯 Nova (536M+ Contact Sourcing)**:
+   - *Explee Feature: "Finds those exact people"*
+   - Sourced directly from a GPU cluster covering **105M+ companies** and **536M+ decision-maker profiles** with 100% email verification.
+4. **✍️ Pulse (1:1 Personal Email Writer)**:
+   - *Explee Feature: "Writes each a personal email"*
+   - Generates context-aware, 1:1 email copy matching prospect install projects, venue lighting needs, and bulk NJ shipping benefits.
 5. **💬 Echo (Objection AI & Meeting Booker)**:
-   - Classifies inbound responses (*Interested*, *Pricing Objection*, *Timing*, *Competitor*), formulates ROI counter-arguments, and dispatches booking links.
-6. **🧠 Apex (GTM Strategy & Self-Optimizer)**:
-   - Continuously runs A/B tests on subject lines and personas, automatically re-allocating budget to peak-performing channels.
+   - *Explee Feature: "Handles replies and books meetings"*
+   - Categorizes inbound prospect questions (e.g. *"How do these hold up under venue lighting?"*), answers technical specs, and auto-dispatches calendar invites.
+6. **🧠 Apex (Pipeline Scaler & Double-Down AI)**:
+   - *Explee Feature: "Learns what works and doubles down"*
+   - Automatically scales high-converting verticals ($1.69/lead) and pauses low-performing segments.
 
 ---
 

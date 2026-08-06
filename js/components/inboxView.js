@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AutoGTM - Autonomous Inbox & Objection AI View
+   Rabbit - Autonomous Inbox & Explee Objection AI View
    ========================================================================== */
 
 import { INBOUND_SENTIMENTS } from '../types.js';
@@ -8,11 +8,11 @@ export function renderInboxView(container, state, onSendReply) {
   container.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
       <div>
-        <h1 style="font-size: 1.5rem; font-weight: 800; color: #FFF;">Autonomous Inbox & Objection AI</h1>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">Echo Agent parses inbound prospect sentiment, answers technical questions, and drafts counter-arguments.</p>
+        <h1 style="font-size: 1.5rem; font-weight: 800; color: #FFF;">Autonomous Inbox & Booking AI</h1>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Echo Agent handles inbound replies, answers product questions, and books meetings automatically.</p>
       </div>
       <div class="intent-badge intent-high" style="font-size: 0.8rem; padding: 6px 12px;">
-        <i data-lucide="bot" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i> Auto-Reply Mode: ACTIVE
+        ⚡ Auto-Booking Mode: ACTIVE
       </div>
     </div>
 
@@ -49,7 +49,7 @@ export function renderInboxView(container, state, onSendReply) {
 
               <!-- AI Proposed Reply -->
               <div style="font-size: 0.75rem; font-weight: 700; color: var(--emerald); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-                <i data-lucide="sparkles" style="width: 12px; height: 12px;"></i> AUTONOMOUS COUNTER-DRAFT
+                <i data-lucide="sparkles" style="width: 12px; height: 12px;"></i> AUTONOMOUS REPLY & BOOKING DISPATCH
               </div>
               <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md); padding: 12px; font-size: 0.85rem; color: #F1F5F9; white-space: pre-wrap; font-family: var(--font-sans); margin-bottom: 16px;">
 ${msg.aiProposedReply}
@@ -57,9 +57,11 @@ ${msg.aiProposedReply}
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
-              <span style="font-size: 0.75rem; color: var(--text-dim);">${msg.status}</span>
+              <span style="font-size: 0.75rem; color: var(--emerald); font-weight: 600;">
+                <i data-lucide="check-circle" style="width: 12px; height: 12px; display: inline-block;"></i> ${msg.status}
+              </span>
               <button class="btn btn-primary btn-send-inbox" data-msg-id="${msg.id}" style="font-size: 0.8rem; padding: 6px 14px;">
-                <i data-lucide="send" style="width: 14px; height: 14px;"></i> Approve & Send Now
+                <i data-lucide="send" style="width: 14px; height: 14px;"></i> Re-Send Invite
               </button>
             </div>
           </div>

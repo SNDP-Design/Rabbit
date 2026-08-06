@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AutoGTM - Real-Time Autonomous Simulation Engine
+   Rabbit - Real-Time Simulation Engine (Explee Pipeline)
    ========================================================================== */
 
 import { AGENT_IDS } from './types.js';
@@ -10,59 +10,58 @@ export class SimulationEngine {
     this.onStateChange = onStateChange;
     this.onLogAdded = onLogAdded;
     this.isRunning = true;
-    this.speed = 3000; // ms per tick
+    this.speed = 3000;
     this.timerId = null;
     this.stepIndex = 0;
 
-    // Simulation steps generator pool
     this.simulationScenarios = [
+      {
+        agentId: AGENT_IDS.KODA,
+        agentName: 'Koda',
+        color: '#06B6D4',
+        task: 'Crawling target domain & studying competitor landscape (afloral.com, nearlynatural.com)...',
+        thought: 'Extracted product offering: Wholesale silk flowers for event designers. 60-second setup complete.',
+        log: 'Koda Agent finished studying target website & synthesized core value proposition.'
+      },
       {
         agentId: AGENT_IDS.ATLAS,
         agentName: 'Atlas',
-        color: '#06B6D4',
-        task: 'Scraping Crunchbase & LinkedIn for newly funded AI & B2B SaaS startups ($5M+ Series A)...',
-        thought: 'Identified 8 new target companies matching ICP criteria: CloudScale, NovaTech, AI Dynamics.',
-        log: 'Indexed 8 new accounts meeting target ARR ($5M-$20M) and hiring signals.'
+        color: '#6366F1',
+        task: 'Segmentation AI calculating ICP Fit Scores (Event Designers 92%, Planners 85%)...',
+        thought: 'Identified highest conversion opportunity in Event Floral Studios ($1.69/lead).',
+        log: 'Atlas Agent computed fit score 92% for Event Designers vertical.'
       },
       {
         agentId: AGENT_IDS.NOVA,
         agentName: 'Nova',
-        color: '#6366F1',
-        task: 'Enriching decision-maker contact details (CTOs, VPs of Sales) with 99% email verification...',
-        thought: 'Sourced email & phone for Elena Rostova (VP Sales). Intent score calculated: 89/100.',
-        log: 'Enriched lead: Elena Rostova (VP Sales at FinPulse). Verified email: elena.r@finpulse.com'
+        color: '#EC4899',
+        task: 'Querying GPU cluster covering 536M+ people profiles for verified owners...',
+        thought: 'Sourced email for Michelle Leo (Owner @ Michelle Leo Events). Email verified 100%.',
+        log: 'Nova Agent sourced 12 verified CEO/Founder contacts from 536M+ database.'
       },
       {
         agentId: AGENT_IDS.PULSE,
         agentName: 'Pulse',
-        color: '#EC4899',
-        task: 'Generating hyper-personalized email copy referencing recent podcast & hiring triggers...',
-        thought: 'Crafted 1:1 copy mentioning recent Series A funding round and Snowflake tech stack.',
-        log: 'Generated personalized 3-step sequence for 12 new qualified decision makers.'
-      },
-      {
-        agentId: AGENT_IDS.VELOCITY,
-        agentName: 'Velocity',
         color: '#A855F7',
-        task: 'Dispatching Step 1 email sequence via dedicated IP warm-up pool with custom tracking...',
-        thought: 'Dispatched 24 outbound emails. SPF/DKIM verification passed. 0 bounce rate.',
-        log: 'Outreach sent to 24 prospects. Open rate prediction: 67.2%.'
+        task: 'Writing context-aware 1:1 personal emails for event designers...',
+        thought: 'Crafted note comparing silk box shipping from NJ vs wilting fresh florals under venue spotlights.',
+        log: 'Pulse Agent generated personalized emails for 12 newly discovered prospects.'
       },
       {
         agentId: AGENT_IDS.ECHO,
         agentName: 'Echo',
         color: '#F59E0B',
-        task: 'Evaluating inbound reply from Marcus Vance (CloudScale Systems)...',
-        thought: 'Detected reply intent: "Pricing Inquiry". Formulated high-conversion ROI breakdown response.',
-        log: 'Objection AI auto-drafted reply with 4.2x ROI proof and Calendly link.'
+        task: 'Analyzing inbound response: "Can you do Tuesday 2pm?"...',
+        thought: 'Matched prospect schedule & auto-dispatched calendar booking confirmation.',
+        log: 'Echo Agent auto-booked demo for Tuesday 14:00 EST.'
       },
       {
         agentId: AGENT_IDS.APEX,
         agentName: 'Apex',
         color: '#10B981',
-        task: 'Analyzing Subject Line A/B testing performance across 600 delivered messages...',
-        thought: 'Subject Line B outperformed Subject Line A by +24.6% open rate. Auto-promoting B to primary.',
-        log: 'Apex Agent automatically updated campaign sequence subject line to top-performing variant B.'
+        task: 'Evaluating vertical campaign ROI ($1.69/lead vs $6.33/lead)...',
+        thought: 'Doubling down on Event Designers vertical; paused low-performing Houses of Worship.',
+        log: 'Apex Agent automatically reallocated budget to top-performing Event Designers vertical.'
       }
     ];
   }
@@ -81,10 +80,6 @@ export class SimulationEngine {
     }
   }
 
-  setSpeed(ms) {
-    this.speed = ms;
-  }
-
   scheduleNextTick() {
     this.timerId = setTimeout(() => {
       if (this.isRunning) {
@@ -98,7 +93,6 @@ export class SimulationEngine {
     const scenario = this.simulationScenarios[this.stepIndex % this.simulationScenarios.length];
     this.stepIndex++;
 
-    // Update Agent state
     const agent = this.state.agents.find(a => a.id === scenario.agentId);
     if (agent) {
       agent.currentTask = scenario.task;
@@ -106,7 +100,6 @@ export class SimulationEngine {
       agent.actionsToday += Math.floor(Math.random() * 3) + 1;
     }
 
-    // Add log entry
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const newLog = {
       id: 'log-' + Date.now(),
@@ -120,41 +113,7 @@ export class SimulationEngine {
     this.state.logs.unshift(newLog);
     if (this.state.logs.length > 50) this.state.logs.pop();
 
-    // Randomly generate a new lead occasionally
-    if (Math.random() > 0.6) {
-      this.simulateNewLead();
-    }
-
-    // Notify UI subscribers
     if (this.onStateChange) this.onStateChange(this.state);
     if (this.onLogAdded) this.onLogAdded(newLog);
-  }
-
-  simulateNewLead() {
-    const names = ['Jordan Lee', 'Taylor Vance', 'Alex Morgan', 'Chloe Bennet', 'Liam Wright'];
-    const companies = ['Aether AI', 'DataSphere', 'Vectra Cloud', 'PulsePay', 'HyperScale'];
-    const titles = ['VP of Engineering', 'Head of Revenue', 'CTO', 'Director of Sales', 'Chief Product Officer'];
-
-    const idx = Math.floor(Math.random() * names.length);
-    const newLead = {
-      id: 'lead-sim-' + Date.now(),
-      name: names[idx],
-      title: titles[idx],
-      company: companies[idx],
-      industry: 'Software & Technology',
-      employees: (Math.floor(Math.random() * 200) + 40).toString(),
-      email: names[idx].toLowerCase().replace(' ', '.') + '@' + companies[idx].toLowerCase().replace(' ', '') + '.com',
-      phone: '+1 (415) ' + Math.floor(100+Math.random()*900) + '-' + Math.floor(1000+Math.random()*9000),
-      linkedin: 'linkedin.com/in/' + names[idx].toLowerCase().replace(' ', ''),
-      stage: 'discovered',
-      intentScore: Math.floor(Math.random() * 30) + 70,
-      buyingSignals: ['Hiring ML Engineers', 'New product launch'],
-      lastActivity: 'Discovered by Atlas Agent via intent signal scan',
-      history: [
-        { time: 'Just now', text: 'Atlas indexed prospect profile matching target ICP.' }
-      ]
-    };
-
-    this.state.leads.unshift(newLead);
   }
 }

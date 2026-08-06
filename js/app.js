@@ -117,47 +117,47 @@ class AutoGTMApp {
   renderCommandCenter() {
     const container = document.getElementById('view-command-center');
     container.innerHTML = `
-      <!-- Stat Banner -->
+      <!-- Explee Stat Banner -->
       <div class="grid-cols-4" style="margin-bottom: 24px;">
         <div class="stat-card">
           <div class="stat-icon"><i data-lucide="bot"></i></div>
           <div>
             <div class="stat-value">6</div>
-            <div class="stat-label">Active Agents</div>
-            <div class="stat-trend"><i data-lucide="check-circle"></i> 100% Operational</div>
+            <div class="stat-label">Autonomous Agents</div>
+            <div class="stat-trend"><i data-lucide="check-circle"></i> 100% Autopilot</div>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-icon" style="background: rgba(6, 182, 212, 0.15); color: var(--cyan); border-color: rgba(6, 182, 212, 0.25);">
-            <i data-lucide="users"></i>
+            <i data-lucide="database"></i>
           </div>
           <div>
-            <div class="stat-value">${this.state.leads.length}</div>
-            <div class="stat-label">Leads Discovered</div>
-            <div class="stat-trend"><i data-lucide="arrow-up-right"></i> +8 Today</div>
+            <div class="stat-value">536M+</div>
+            <div class="stat-label">People Profiles Covered</div>
+            <div class="stat-trend"><i data-lucide="shield-check"></i> 105M+ Companies</div>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: var(--purple); border-color: rgba(168, 85, 247, 0.25);">
-            <i data-lucide="send"></i>
+            <i data-lucide="flame"></i>
           </div>
           <div>
-            <div class="stat-value">507</div>
-            <div class="stat-label">Outreach Messages</div>
-            <div class="stat-trend"><i data-lucide="arrow-up-right"></i> 68.4% Open Rate</div>
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Pre-Warmed Inbox Rate</div>
+            <div class="stat-trend"><i data-lucide="arrow-up-right"></i> 74.2% Open Rate</div>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--emerald); border-color: rgba(16, 185, 129, 0.25);">
-            <i data-lucide="calendar"></i>
+            <i data-lucide="dollar-sign"></i>
           </div>
           <div>
-            <div class="stat-value">23</div>
-            <div class="stat-label">Meetings Booked</div>
-            <div class="stat-trend"><i data-lucide="arrow-up-right"></i> $380k Pipeline</div>
+            <div class="stat-value">$1.69</div>
+            <div class="stat-label">Cost / Warm Lead</div>
+            <div class="stat-trend"><i data-lucide="arrow-down-right"></i> $0.03 per email</div>
           </div>
         </div>
       </div>
