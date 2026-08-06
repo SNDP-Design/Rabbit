@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rabbit | Fully Autonomous AI Agent Go-To-Market Platform</title>
+  <meta name="description" content="Rabbit - Self-operating Go-To-Market AI platform powered by an autonomous agent workforce. Discovers ICPs, enriches leads, writes personalized sequences, handles objections, and optimizes ROI autonomously.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Main Styling -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- Header Component rendered by JS -->
+    <header id="header-container" class="app-header"></header>
+
+    <div class="app-body">
+      <!-- Sidebar Navigation -->
+      <aside id="sidebar-container" class="app-sidebar"></aside>
+
+      <!-- Main Content View Container -->
+      <main id="main-content" class="app-main">
+        <!-- Views loaded dynamically via JS -->
+        <div id="view-command-center" class="view-panel active"></div>
+        <div id="view-campaigns" class="view-panel"></div>
+        <div id="view-pipeline" class="view-panel"></div>
+        <div id="view-sequences" class="view-panel"></div>
+        <div id="view-inbox" class="view-panel"></div>
+        <div id="view-optimization" class="view-panel"></div>
+      </main>
+    </div>
+
+    <!-- Modals & Drawers -->
+    <div id="lead-drawer-backdrop" class="drawer-backdrop hidden">
+      <div id="lead-drawer" class="drawer-content"></div>
+    </div>
+
+    <div id="copilot-modal-backdrop" class="modal-backdrop hidden">
+      <div id="copilot-modal" class="modal-card"></div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
