@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AutoGTM - Main Application Entry Point
+   Rabbit - Main Application Entry Point
    ========================================================================== */
 
 import { initialAgents, initialCampaigns, initialLeads, initialSequences, initialInboxMessages, initialOptimizationLogs } from './mockData.js';
@@ -28,8 +28,8 @@ class AutoGTMApp {
       inboxMessages: initialInboxMessages,
       optimizationLogs: initialOptimizationLogs,
       logs: [
-        { id: 'log-1', time: 'Just now', agentId: 'atlas', agentName: 'Atlas', color: '#06B6D4', text: 'Autonomous GTM Engine booted successfully. 6 agents online.' },
-        { id: 'log-2', time: '1 min ago', agentId: 'nova', agentName: 'Nova', color: '#6366F1', text: 'Indexed 45 target decision makers matching Series A ICP criteria.' }
+        { id: 'log-1', time: 'Just now', agentId: 'koda', agentName: 'Koda', color: '#06B6D4', text: 'Rabbit Autonomous Engine booted successfully. 6 Explee AI agents online.' },
+        { id: 'log-2', time: '1 min ago', agentId: 'nova', agentName: 'Nova', color: '#EC4899', text: 'Queried GPU cluster: indexed 536M+ decision maker profiles.' }
       ],
       selectedLead: null
     };
@@ -55,9 +55,37 @@ class AutoGTMApp {
   init() {
     this.renderLayout();
     this.renderCurrentView();
+    this.setupGlobalEventListeners();
     this.engine.start();
 
     if (window.lucide) window.lucide.createIcons();
+  }
+
+  setupGlobalEventListeners() {
+    // Backdrop click handlers to dismiss modals/drawers
+    if (this.leadDrawerBackdrop) {
+      this.leadDrawerBackdrop.addEventListener('click', (e) => {
+        if (e.target === this.leadDrawerBackdrop) {
+          this.closeLeadDrawer();
+        }
+      });
+    }
+
+    if (this.copilotBackdrop) {
+      this.copilotBackdrop.addEventListener('click', (e) => {
+        if (e.target === this.copilotBackdrop) {
+          this.closeCopilot();
+        }
+      });
+    }
+
+    // Keyboard ESC key handler
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeLeadDrawer();
+        this.closeCopilot();
+      }
+    });
   }
 
   renderLayout() {
@@ -97,13 +125,13 @@ class AutoGTMApp {
         this.renderCommandCenter();
         break;
       case 'campaigns':
-        renderCampaignsView(document.getElementById('view-campaigns'), this.state, () => {});
+        renderCampaignsView(document.getElementById('view-campaigns'), this.state, (domain) => this.handleLaunchDomain(domain));
         break;
       case 'pipeline':
         renderPipelineView(document.getElementById('view-pipeline'), this.state, (lead) => this.openLeadDrawer(lead));
         break;
       case 'sequences':
-        renderSequenceView(document.getElementById('view-sequences'), this.state);
+        renderSequenceView(document.getElementById('view-sequences'), this.state, () => this.handleOptimizeSequences());
         break;
       case 'inbox':
         renderInboxView(document.getElementById('view-inbox'), this.state, (msgId) => this.handleSendReply(msgId));
@@ -116,6 +144,8 @@ class AutoGTMApp {
 
   renderCommandCenter() {
     const container = document.getElementById('view-command-center');
+    if (!container) return;
+
     container.innerHTML = `
       <!-- Explee Stat Banner -->
       <div class="grid-cols-4" style="margin-bottom: 24px;">
@@ -144,8 +174,8 @@ class AutoGTMApp {
             <i data-lucide="flame"></i>
           </div>
           <div>
-            <div class="stat-value">100%</div>
-            <div class="stat-label">Pre-Warmed Inbox Rate</div>
+            <div class="stat-value">${this.state.leads.length}</div>
+            <div class="stat-label">Active Prospects</div>
             <div class="stat-trend"><i data-lucide="arrow-up-right"></i> 74.2% Open Rate</div>
           </div>
         </div>
@@ -228,12 +258,17 @@ class AutoGTMApp {
       this.copilotModal,
       this.state,
       (promptText) => this.handleCopilotDirective(promptText),
-      () => this.copilotBackdrop.classList.add('hidden')
+      () => this.closeCopilot()
     );
   }
 
+  closeCopilot() {
+    if (this.copilotBackdrop) {
+      this.copilotBackdrop.classList.add('hidden');
+    }
+  }
+
   handleCopilotDirective(promptText) {
-    // Add log entry acknowledging prompt
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     this.state.logs.unshift({
       id: 'log-' + Date.now(),
@@ -244,7 +279,6 @@ class AutoGTMApp {
       text: `DIRECTIVE RECEIVED: "${promptText}". Updating campaign strategies across all 6 agents.`
     });
 
-    // Update Apex thought stream
     const apex = this.state.agents.find(a => a.id === 'apex');
     if (apex) {
       apex.thoughtStream = `Re-calibrating targeting model & sequence parameters per user directive: "${promptText.substring(0, 40)}..."`;
@@ -253,12 +287,60 @@ class AutoGTMApp {
     this.onStateUpdated(this.state);
   }
 
+  handleLaunchDomain(domain) {
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    this.state.logs.unshift({
+      id: 'log-' + Date.now(),
+      time: timestamp,
+      agentId: 'koda',
+      agentName: 'Koda',
+      color: '#06B6D4',
+      text: `AUTOPILOT LAUNCHED for ${domain}. Koda studying domain offering & competitor landscape.`
+    });
+
+    const koda = this.state.agents.find(a => a.id === 'koda');
+    if (koda) {
+      koda.currentTask = `Analyzing domain ${domain}...`;
+      koda.thoughtStream = `Studying domain features and extracting value proposition for ${domain}.`;
+    }
+
+    this.onStateUpdated(this.state);
+  }
+
+  handleOptimizeSequences() {
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    this.state.logs.unshift({
+      id: 'log-' + Date.now(),
+      time: timestamp,
+      agentId: 'pulse',
+      agentName: 'Pulse',
+      color: '#A855F7',
+      text: `Pulse Agent auto-optimized dynamic variables across all outreach steps.`
+    });
+
+    const pulse = this.state.agents.find(a => a.id === 'pulse');
+    if (pulse) {
+      pulse.thoughtStream = `Re-synthesized email & message copy for 1:1 personalization.`;
+    }
+
+    this.onStateUpdated(this.state);
+    if (this.state.activeView === 'sequences') {
+      renderSequenceView(document.getElementById('view-sequences'), this.state, () => this.handleOptimizeSequences());
+    }
+  }
+
   openLeadDrawer(lead) {
     this.state.selectedLead = lead;
     this.leadDrawerBackdrop.classList.remove('hidden');
     renderLeadDrawer(this.leadDrawer, lead, () => {
-      this.leadDrawerBackdrop.classList.add('hidden');
+      this.closeLeadDrawer();
     });
+  }
+
+  closeLeadDrawer() {
+    if (this.leadDrawerBackdrop) {
+      this.leadDrawerBackdrop.classList.add('hidden');
+    }
   }
 
   handleSendReply(msgId) {
@@ -279,9 +361,13 @@ class AutoGTMApp {
   }
 
   onStateUpdated(state) {
+    this.renderSidebar();
+
     if (this.state.activeView === 'command-center') {
       const gridContainer = document.getElementById('workforce-grid-container');
       if (gridContainer) renderWorkforceGrid(gridContainer, state.agents);
+    } else if (this.state.activeView === 'pipeline') {
+      renderPipelineView(document.getElementById('view-pipeline'), this.state, (lead) => this.openLeadDrawer(lead));
     }
   }
 

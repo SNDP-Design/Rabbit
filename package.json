@@ -1,0 +1,18 @@
+{
+  "name": "rabbit",
+  "version": "2.4.0",
+  "description": "Fully Autonomous AI Agent Go-To-Market Platform",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 3000"
+  },
+  "keywords": [
+    "gtm",
+    "ai-agents",
+    "autonomous",
+    "explee",
+    "prospecting"
+  ],
+  "author": "SNDP-Design",
+  "license": "MIT"
+}

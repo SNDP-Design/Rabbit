@@ -641,3 +641,20 @@ body {
 .text-emerald { color: var(--emerald); }
 .text-amber { color: var(--amber); }
 .text-purple { color: var(--purple); }
+
+/* Responsive Media Queries */
+@media (max-width: 900px) {
+  .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-cols-3 { grid-template-columns: repeat(1, 1fr); }
+  .grid-cols-2 { grid-template-columns: repeat(1, 1fr); }
+  .app-sidebar { width: 190px; }
+  .drawer-content { width: 100vw; }
+}
+
+@media (max-width: 640px) {
+  .grid-cols-4 { grid-template-columns: repeat(1, 1fr); }
+  .app-header { padding: 0 12px; height: 56px; }
+  .app-main { padding: 12px; }
+  .brand-badge { display: none; }
+  .autonomous-status-badge { padding: 4px 10px; font-size: 0.75rem; }
+}

@@ -4,7 +4,7 @@
 
 import { ICP_SEGMENTS } from '../types.js';
 
-export function renderCampaignsView(container, state) {
+export function renderCampaignsView(container, state, onLaunchDomain) {
   container.innerHTML = `
     <!-- Explee 60-Second Domain Launcher Hero Card -->
     <div class="card" style="background: linear-gradient(135deg, rgba(15, 22, 49, 0.95), rgba(6, 182, 212, 0.15)); border: 1px solid var(--border-cyan); margin-bottom: 24px;">
@@ -99,7 +99,21 @@ export function renderCampaignsView(container, state) {
     launchBtn.addEventListener('click', () => {
       const val = inputDomain.value.trim() || 'larksilk.com';
       box.style.display = 'block';
-      box.querySelector('div').innerHTML = `<i data-lucide="check-circle" style="width:14px;height:14px;color:var(--emerald);"></i> Koda Agent completed instant crawl of ${val}! Autopilot sequence launched across 6 agents.`;
+      box.innerHTML = `
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--emerald); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Koda Agent Completed Instant Crawl of ${val}!
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">
+          <strong>Target Domain:</strong> <span style="font-family: var(--font-mono); color: var(--cyan);">${val}</span> — Autopilot sequence launched across 6 Explee autonomous agents.
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.75rem;">
+          <span style="background: rgba(16, 185, 129, 0.15); color: var(--emerald); padding: 4px 10px; border-radius: var(--radius-full);">
+            ⚡ 6 Agents Active & Dispatched
+          </span>
+        </div>
+      `;
+      if (onLaunchDomain) onLaunchDomain(val);
+      if (window.lucide) window.lucide.createIcons();
     });
   }
 

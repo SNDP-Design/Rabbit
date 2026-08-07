@@ -1,8 +1,8 @@
 /* ==========================================================================
-   AutoGTM - Sequence Studio View
+   Rabbit - Sequence Studio View
    ========================================================================== */
 
-export function renderSequenceView(container, state) {
+export function renderSequenceView(container, state, onOptimize) {
   container.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
       <div>
@@ -59,6 +59,13 @@ ${seq.body}
       `).join('')}
     </div>
   `;
+
+  const rewriteBtn = container.querySelector('#btn-ai-rewrite-seq');
+  if (rewriteBtn && onOptimize) {
+    rewriteBtn.addEventListener('click', () => {
+      onOptimize();
+    });
+  }
 
   if (window.lucide) window.lucide.createIcons();
 }
