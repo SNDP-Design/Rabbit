@@ -81,6 +81,7 @@ export class SimulationEngine {
   }
 
   scheduleNextTick() {
+    if (!this.isRunning) return;
     this.timerId = setTimeout(() => {
       if (this.isRunning) {
         this.tick();
@@ -90,6 +91,7 @@ export class SimulationEngine {
   }
 
   tick() {
+    if (!this.isRunning) return;
     const scenario = this.simulationScenarios[this.stepIndex % this.simulationScenarios.length];
     this.stepIndex++;
 
@@ -113,7 +115,64 @@ export class SimulationEngine {
     this.state.logs.unshift(newLog);
     if (this.state.logs.length > 50) this.state.logs.pop();
 
+    // Occasional lead generation & stage progression
+    if (scenario.agentId === AGENT_IDS.NOVA && Math.random() > 0.4) {
+      this.simulateNewLead(timestamp);
+    } else if (scenario.agentId === AGENT_IDS.ECHO && Math.random() > 0.5) {
+      this.advanceLeadStage(timestamp);
+    }
+
     if (this.onStateChange) this.onStateChange(this.state);
     if (this.onLogAdded) this.onLogAdded(newLog);
+  }
+
+  simulateNewLead(timeStr) {
+    const names = ['Camille Rose', 'Wole Fagbohun', 'Joe Purcell', 'Adejuwon Oyebanjo', 'Stuart Armley'];
+    const companies = ['LogSure Floral', 'PlotWeaver Events', 'Radar Decor', 'Passpoint Styling', 'Foodfluence Events'];
+    const titles = ['Owner & Founder', 'Lead Designer', 'Creative Director', 'Head of Events', 'Managing Director'];
+
+    const idx = Math.floor(Math.random() * names.length);
+    const company = companies[idx];
+    const name = names[idx];
+    const email = name.toLowerCase().replace(' ', '.') + '@' + company.toLowerCase().replace(' ', '') + '.com';
+
+    const newLead = {
+      id: 'lead-sim-' + Date.now(),
+      name: name,
+      title: titles[idx],
+      company: company,
+      industry: 'Event & Floral Design',
+      employees: (Math.floor(Math.random() * 30) + 10).toString(),
+      email: email,
+      phone: '+1 (415) ' + Math.floor(100 + Math.random() * 900) + '-' + Math.floor(1000 + Math.random() * 9000),
+      linkedin: 'linkedin.com/in/' + name.toLowerCase().replace(' ', ''),
+      stage: 'discovered',
+      intentScore: Math.floor(Math.random() * 20) + 80,
+      buyingSignals: ['Hiring Event Stylists', 'Full-scale installs'],
+      lastActivity: 'Discovered by Nova Agent via 536M+ GPU database scan',
+      history: [
+        { time: timeStr, text: 'Nova indexed prospect profile matching Event Designers ICP.' }
+      ]
+    };
+
+    this.state.leads.unshift(newLead);
+  }
+
+  advanceLeadStage(timeStr) {
+    const progressableLeads = this.state.leads.filter(l => l.stage !== 'meeting_booked');
+    if (progressableLeads.length > 0) {
+      const target = progressableLeads[Math.floor(Math.random() * progressableLeads.length)];
+      const stageOrder = ['discovered', 'enriched', 'contacted', 'engaged', 'meeting_booked'];
+      const currentIdx = stageOrder.indexOf(target.stage);
+      if (currentIdx !== -1 && currentIdx < stageOrder.length - 1) {
+        target.stage = stageOrder[currentIdx + 1];
+        target.lastActivity = `Advanced to ${target.stage.replace('_', ' ')} by Echo Agent`;
+        if (!target.history) target.history = [];
+        target.history.unshift({
+          time: timeStr,
+          text: `Echo Agent advanced lead pipeline status to "${target.stage}".`
+        });
+      }
+    }
   }
 }

@@ -1,8 +1,10 @@
 /* ==========================================================================
-   AutoGTM - Agent Co-Pilot Modal Component
+   Rabbit - Agent Co-Pilot Modal Component
    ========================================================================== */
 
 export function renderCopilotModal(modalContainer, state, onSubmitPrompt, onClose) {
+  if (!modalContainer) return;
+
   modalContainer.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px;">
       <div style="display: flex; align-items: center; gap: 10px;">
@@ -58,22 +60,29 @@ export function renderCopilotModal(modalContainer, state, onSubmitPrompt, onClos
 
   presets.forEach(p => {
     p.addEventListener('click', () => {
-      input.value = p.getAttribute('data-preset');
+      if (input) {
+        input.value = p.getAttribute('data-preset');
+        input.focus();
+      }
     });
   });
 
-  const handleClose = () => onClose();
+  const handleClose = () => {
+    if (onClose) onClose();
+  };
 
-  closeBtn.addEventListener('click', handleClose);
-  cancelBtn.addEventListener('click', handleClose);
+  if (closeBtn) closeBtn.addEventListener('click', handleClose);
+  if (cancelBtn) cancelBtn.addEventListener('click', handleClose);
 
-  submitBtn.addEventListener('click', () => {
-    const text = input.value.trim();
-    if (text) {
-      onSubmitPrompt(text);
-      handleClose();
-    }
-  });
+  if (submitBtn) {
+    submitBtn.addEventListener('click', () => {
+      const text = input ? input.value.trim() : '';
+      if (text && onSubmitPrompt) {
+        onSubmitPrompt(text);
+        handleClose();
+      }
+    });
+  }
 
   if (window.lucide) window.lucide.createIcons();
 }
