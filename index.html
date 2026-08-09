@@ -6,6 +6,8 @@
   <title>Rabbit | Fully Autonomous AI Agent Go-To-Market Platform</title>
   <meta name="description" content="Rabbit - Self-operating Go-To-Market AI platform powered by an autonomous agent workforce. Discovers ICPs, enriches leads, writes personalized sequences, handles objections, and optimizes ROI autonomously.">
   
+  <base href="./">
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +15,11 @@
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    if (!window.lucide) {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"><\/script>');
+    }
+  </script>
   
   <!-- Main Styling -->
   <link rel="stylesheet" href="css/styles.css">

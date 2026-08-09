@@ -390,7 +390,15 @@ class AutoGTMApp {
   }
 }
 
-// Instantiate on DOM load
-window.addEventListener('DOMContentLoaded', () => {
-  window.app = new AutoGTMApp();
-});
+// Safe initialization supporting ES module deferral & instant load
+function initApp() {
+  if (!window.app) {
+    window.app = new AutoGTMApp();
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
