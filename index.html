@@ -477,6 +477,7 @@
     </div>
 
     <div class="header-actions">
+      <button class="btn btn-outline" onclick="promptDomainInput()">🌐 Connect Domain</button>
       <button class="btn btn-default" id="btn-toggle-engine">⏸ Pause Engine</button>
       <button class="btn btn-primary" id="btn-open-copilot">✦ Co-Pilot</button>
     </div>
@@ -535,6 +536,7 @@ const SENTIMENTS = {
 
 const state = {
   engineRunning: true,
+  connectedDomain: '',
   activeView: 'command-center',
   agents: [
     { id:'koda',  name:'Koda',  role:'Domain & Offer Intelligence',     avatar:'🔍', color:'#3ECF8E', efficiency:'99.8%', actionsToday:1840,
@@ -655,10 +657,31 @@ function renderView() {
 // ---- COMMAND CENTER -------------------------------------
 function renderCommandCenter() {
   const c = document.getElementById('view-command-center');
+  const dVal = state.connectedDomain || '';
   c.innerHTML = `
-    <div class="page-header">
-      <div class="page-title">Command Center</div>
-      <div class="page-sub">Live telemetry from your 6-agent autonomous GTM workforce</div>
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="page-title">Command Center</div>
+        <div class="page-sub">Live telemetry from your 6-agent autonomous GTM workforce</div>
+      </div>
+    </div>
+
+    <!-- Product Setup Hero Banner -->
+    <div class="card" style="border-color:var(--sb-green-border);margin-bottom:20px;background:linear-gradient(135deg,rgba(28,28,28,0.95),rgba(62,207,142,0.08))">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--sb-text);margin-bottom:4px">🌐 Connect Your Product Domain</div>
+          <div style="font-size:14px;color:var(--sb-text-2)">Enter your website URL — Koda Agent will crawl your features, extract your value proposition, and deploy all 6 autonomous agents for your product.</div>
+        </div>
+        <span class="chip chip-green">⚡ 60-Second Setup</span>
+      </div>
+      <div style="display:flex;gap:10px">
+        <input id="hero-domain-input" type="text" placeholder="e.g. yourcompany.com or app.myproduct.io" value="${dVal}" style="flex:1;padding:10px 14px">
+        <button class="btn btn-primary" onclick="connectProductDomainFromInput()">⚡ Deploy AI Workforce for My Product</button>
+      </div>
+      <div id="hero-domain-status" style="margin-top:10px;display:${dVal ? 'block' : 'none'}">
+        <div style="font-size:14px;color:var(--sb-green);font-weight:600">✓ Active Product Connected: <code style="font-family:var(--font);color:var(--sb-green);font-size:14px">${dVal}</code> — All 6 agents running custom pipeline for your product.</div>
+      </div>
     </div>
 
     <div class="grid-4">
@@ -1205,7 +1228,79 @@ function addLog(agentId, agentName, color, text) {
 function startSim() { if (!simTimer) simTimer = setInterval(tick, 3000); }
 function stopSim()  { if (simTimer) { clearInterval(simTimer); simTimer = null; } }
 
+
+// ---- DOMAIN ONBOARDING LOGIC ----------------------------
+function connectProductDomainFromInput() {
+  const inp = document.getElementById('hero-domain-input') || document.getElementById('domain-input');
+  const val = inp ? inp.value.trim() : '';
+  if (!val) {
+    alert('Please enter your website URL (e.g. yourcompany.com)');
+    return;
+  }
+  applyConnectedDomain(val);
+}
+
+function promptDomainInput() {
+  const url = prompt('Enter your website domain (e.g. yourcompany.com):', state.connectedDomain || 'mycompany.com');
+  if (url && url.trim()) {
+    applyConnectedDomain(url.trim());
+  }
+}
+
+function applyConnectedDomain(domain) {
+  domain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+  state.connectedDomain = domain;
+
+  const brandName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+
+  const koda = state.agents.find(a => a.id === 'koda');
+  if (koda) {
+    koda.currentTask = `Analyzing ${domain} — studying product features & value proposition...`;
+    koda.thoughtStream = `Crawled ${domain} homepage. Extracted value proposition for ${brandName}. Competitor landscape mapped.`;
+  }
+
+  const atlas = state.agents.find(a => a.id === 'atlas');
+  if (atlas) {
+    atlas.currentTask = `Calculating ICP fit scores for ${brandName} offerings...`;
+    atlas.thoughtStream = `Identified top conversion opportunities for ${brandName} ($1.69/lead). Paused low-converting verticals.`;
+  }
+
+  const nova = state.agents.find(a => a.id === 'nova');
+  if (nova) {
+    nova.currentTask = `Querying 536M+ profiles for decision makers interested in ${brandName}...`;
+    nova.thoughtStream = `Sourced verified CEO/Founder contacts matching ${brandName}'s ideal customer profile.`;
+  }
+
+  const pulse = state.agents.find(a => a.id === 'pulse');
+  if (pulse) {
+    pulse.currentTask = `Synthesizing 1:1 personalized emails tailored to ${brandName}'s offer...`;
+    pulse.thoughtStream = `Drafted custom outreach copy referencing ${brandName}'s key differentiation features.`;
+  }
+
+  const echo = state.agents.find(a => a.id === 'echo');
+  if (echo) {
+    echo.currentTask = `Objection & Booking AI trained on ${brandName} knowledge base...`;
+    echo.thoughtStream = `Armed with ${brandName} product specs & auto-booking calendar integration.`;
+  }
+
+  const apex = state.agents.find(a => a.id === 'apex');
+  if (apex) {
+    apex.currentTask = `Self-optimization loop active for ${brandName} campaigns...`;
+    apex.thoughtStream = `Re-allocating outreach budget to top-performing verticals for ${brandName}.`;
+  }
+
+  if (state.sequences[0]) {
+    state.sequences[0].subject = `${brandName} x {{company}}`;
+    state.sequences[0].body = `Hi {{first_name}},\n\nSaw {{company}} is scaling rapidly. We built ${brandName} (${domain}) to help teams like yours streamline operations and boost conversion rates without high manual overhead.\n\nWould you be open to a quick 10-min demo this week?\n\nBest,\nRabbit Autonomous Agent`;
+  }
+
+  addLog('koda', 'Koda', '#3ECF8E', `CONNECTED NEW PRODUCT DOMAIN: ${domain}. Koda completed instant crawl and re-configured all 6 agents for ${brandName}.`);
+  renderSidebar();
+  renderView();
+}
+
 // ---- BOOT -----------------------------------------------
+
 renderSidebar();
 renderView();
 startSim();
