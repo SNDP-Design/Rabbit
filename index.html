@@ -758,13 +758,16 @@ function renderLogs() {
 // ---- CAMPAIGNS ------------------------------------------
 function renderCampaigns() {
   const c = document.getElementById('view-campaigns');
-  const segs = [
-    { name:'Event Designers & Studios',   fit:'92%', status:'Scaling', cost:'$1.69' },
-    { name:'Wedding Floral Studios',       fit:'88%', status:'Working', cost:'$2.40' },
-    { name:'Country Clubs & Hospitality', fit:'79%', status:'Working', cost:'$3.10' },
-    { name:'Houses of Worship',            fit:'48%', status:'Paused',  cost:'$6.33' },
-    { name:'Property Management',          fit:'31%', status:'Paused',  cost:'$8.80' }
-  ];
+  const d = state.connectedDomain;
+  const brandName = d ? (d.split('.')[0].charAt(0).toUpperCase() + d.split('.')[0].slice(1)) : '';
+
+  const segs = d ? [
+    { name: `${brandName} High-Intent B2B Buyers`, fit: '94%', status: 'Scaling', cost: '$1.69' },
+    { name: `${brandName} Enterprise Decision Makers`, fit: '88%', status: 'Working', cost: '$2.40' },
+    { name: `${brandName} Mid-Market Accounts`, fit: '79%', status: 'Working', cost: '$3.10' },
+    { name: `Low-Fit Pilot Segment`, fit: '42%', status: 'Paused', cost: '$6.50' }
+  ] : [];
+
   c.innerHTML = `
     <div class="page-header">
       <div class="page-title">Campaigns & ICP Targeting</div>
@@ -780,47 +783,52 @@ function renderCampaigns() {
         <span class="chip chip-green">🎁 $30 Free Credits</span>
       </div>
       <div style="display:flex;gap:10px;margin-bottom:14px">
-        <input id="domain-input" type="text" value="larksilk.com" placeholder="your-domain.com" style="flex:1;padding:10px 14px">
-        <button class="btn btn-primary" onclick="launchAutopilot()">⚡ Launch Autopilot</button>
+        <input id="domain-input" type="text" value="${d}" placeholder="yourcompany.com" style="flex:1;padding:10px 14px">
+        <button class="btn btn-primary" onclick="connectProductDomainFromInput()">⚡ Launch Autopilot</button>
       </div>
       <div id="domain-box" style="background:var(--sb-bg);border:1px solid var(--sb-border);border-radius:var(--radius-md);padding:14px">
-        <div style="font-size:14px;font-weight:600;color:var(--sb-green);margin-bottom:6px">● Koda Agent — Studying target domain & competitor matrix</div>
-        <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target:</strong> <code style="color:var(--sb-green);font-family:var(--font)">larksilk.com</code> — Wholesale silk flowers for hotels, restaurants & florists (45+ yrs).</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">
-          ${['afloral.com','nearlynatural.com','silksareforever.com'].map(d => `<span class="chip chip-muted">Competitor: ${d}</span>`).join('')}
-        </div>
+        ${d ? `
+          <div style="font-size:14px;font-weight:600;color:var(--sb-green);margin-bottom:6px">✓ Koda completed analysis of ${d}</div>
+          <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target Product:</strong> <code style="color:var(--sb-green);font-family:var(--font)">${d}</code> — Autopilot sequence active across all 6 agents for ${brandName}.</div>
+          <span class="chip chip-green">⚡ 6 Agents Active & Operating</span>
+        ` : `
+          <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);margin-bottom:6px">● Koda Agent — Waiting for website URL input above</div>
+          <div style="font-size:14px;color:var(--sb-text-3)">Enter your product domain above to launch website crawl & competitor synthesis.</div>
+        `}
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
         <div class="card-title">📊 Atlas Fit Score Segmentation</div>
-        <span class="chip chip-green">Apex Auto-Scaling</span>
+        <span class="chip chip-green">${d ? 'Apex Auto-Scaling' : 'Awaiting Domain'}</span>
       </div>
-      <table class="data-table">
-        <thead>
-          <tr><th>Vertical</th><th>Fit Score</th><th>Apex Status</th><th>Cost / Lead</th></tr>
-        </thead>
-        <tbody>
-          ${segs.map(s => `
-            <tr style="${s.status==='Paused'?'opacity:0.45':''}">
-              <td style="font-weight:500;color:var(--sb-text)">${s.name}</td>
-              <td><code style="font-family:var(--font);color:var(--sb-green);font-size:14px;font-weight:600">${s.fit}</code></td>
-              <td><span class="chip ${s.status==='Scaling'?'chip-green':s.status==='Working'?'chip-blue':'chip-muted'}">${s.status}</span></td>
-              <td style="font-weight:600;color:${s.status==='Paused'?'var(--sb-text-3)':'var(--sb-green)'}">${s.cost}/lead</td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
+      ${segs.length > 0 ? `
+        <table class="data-table">
+          <thead>
+            <tr><th>Vertical Segment</th><th>Fit Score</th><th>Apex Status</th><th>Cost / Lead</th></tr>
+          </thead>
+          <tbody>
+            ${segs.map(s => `
+              <tr style="${s.status==='Paused'?'opacity:0.45':''}">
+                <td style="font-weight:500;color:var(--sb-text)">${s.name}</td>
+                <td><code style="font-family:var(--font);color:var(--sb-green);font-size:14px;font-weight:600">${s.fit}</code></td>
+                <td><span class="chip ${s.status==='Scaling'?'chip-green':s.status==='Working'?'chip-blue':'chip-muted'}">${s.status}</span></td>
+                <td style="font-weight:600;color:${s.status==='Paused'?'var(--sb-text-3)':'var(--sb-green)'}">${s.cost}/lead</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      ` : `
+        <div class="empty-col" style="padding:30px">
+          No campaigns or verticals active yet.<br>
+          <span style="color:var(--sb-text-3)">Connect your product domain above to automatically calculate ICP fit scores.</span>
+        </div>
+      `}
     </div>`;
 }
 
 function launchAutopilot() {
-  const domain = document.getElementById('domain-input').value.trim() || 'larksilk.com';
-  document.getElementById('domain-box').innerHTML = `
-    <div style="font-size:14px;font-weight:600;color:var(--sb-green);margin-bottom:6px">✓ Koda completed instant analysis of ${domain}</div>
-    <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target:</strong> <code style="color:var(--sb-green);font-family:var(--font)">${domain}</code> — Autopilot sequence dispatched to all 6 agents.</div>
-    <span class="chip chip-green">⚡ 6 Agents Active & Operating</span>`;
-  addLog('koda','Koda','#3ECF8E',`Autopilot launched for ${domain}. Studying domain offering & competitor landscape.`);
+  connectProductDomainFromInput();
 }
 
 // ---- PIPELINE -------------------------------------------
@@ -1126,24 +1134,29 @@ document.getElementById('copilot-backdrop').addEventListener('click', e => { if 
 window.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLead(); closeCopilot(); } });
 
 // ---- SIMULATION -----------------------------------------
-const SCENARIOS = [
-  { id:'koda',  name:'Koda',  c:'#3ECF8E', task:'Crawling target domain & mapping competitor landscape...', thought:'Value prop extracted: "Bulk silk boxes save 60% vs fresh florals under venue lights".', log:'Koda finished studying domain & synthesized core value proposition.' },
-  { id:'atlas', name:'Atlas', c:'#6366F1', task:'Segmentation AI computing ICP Fit Scores across 5 verticals...', thought:'Event Designers (92% fit, $1.69/lead) — highest conversion opportunity identified.', log:'Atlas computed 92% fit score for Event Designers vertical.' },
-  { id:'nova',  name:'Nova',  c:'#0EA5E9', task:'Querying 536M+ GPU cluster for verified decision makers...', thought:'Sourced Michelle Leo (Owner @ Michelle Leo Events). Verification: 100%.', log:'Nova sourced 12 verified CEO/Owner contacts from 536M+ database.' },
-  { id:'pulse', name:'Pulse', c:'#A855F7', task:'Writing 1:1 context-aware emails for event designers...', thought:'Crafted copy referencing silk boxes vs wilting fresh florals under venue spotlights.', log:'Pulse generated personalized emails for 12 newly discovered prospects.' },
-  { id:'echo',  name:'Echo',  c:'#F59E0B', task:'Analyzing inbound: "Can you do Tuesday 2pm?"...', thought:'Matched schedule & auto-dispatched calendar booking confirmation via Echo.', log:'Echo auto-booked demo for Tuesday 14:00 EST.' },
-  { id:'apex',  name:'Apex',  c:'#3ECF8E', task:'Evaluating vertical ROI — Event Designers $1.69 vs $6.33...', thought:'Doubling down on Event Designers; paused Houses of Worship.', log:'Apex reallocated full budget to top-performing Event Designers vertical.' }
-];
-
-const SIM_NAMES = ['Camille Rose','Wole Fagbohun','Joe Purcell','Priya Nair','Stuart Armley','Adaeze Eze'];
-const SIM_COS   = ['LogSure Floral','PlotWeaver Events','Radar Decor','Passpoint Styling','Bloom & Co','Verde Events'];
+const SIM_NAMES = ['Jordan Lee', 'Morgan Vance', 'Taylor Reed', 'Chris Zhang', 'Alex Mercer', 'Sam Patel'];
+const SIM_COS   = ['Apex Dynamics', 'Vanguard Tech', 'Nexus Operations', 'Prism Solutions', 'Veritas Growth', 'Beacon Labs'];
 
 let simIdx = 0, simTimer = null;
 
 function tick() {
   if (!state.engineRunning || !state.connectedDomain) return;
-  const sc = SCENARIOS[simIdx % SCENARIOS.length];
+
+  const d = state.connectedDomain;
+  const brandName = d.split('.')[0].charAt(0).toUpperCase() + d.split('.')[0].slice(1);
+
+  const scenarios = [
+    { id:'koda',  name:'Koda',  c:'#3ECF8E', task:`Crawling ${d} & studying competitor matrix...`, thought:`Extracted core value proposition for ${brandName}. Competitors mapped.`, log:`Koda completed crawl of ${d} & synthesized value proposition.` },
+    { id:'atlas', name:'Atlas', c:'#6366F1', task:`Calculating ICP Fit Scores for ${brandName}...`, thought:`High-Intent Buyers vertical (94% fit, $1.69/lead) identified as top target.`, log:`Atlas computed 94% fit score for ${brandName} buyers.` },
+    { id:'nova',  name:'Nova',  c:'#0EA5E9', task:`Querying 536M+ GPU cluster for verified decision makers...`, thought:`Sourced verified CEO/VP profiles interested in ${brandName}.`, log:`Nova sourced 12 verified contacts matching ${brandName} ICP.` },
+    { id:'pulse', name:'Pulse', c:'#A855F7', task:`Writing 1:1 context-aware emails for ${brandName}...`, thought:`Crafted personalized outreach referencing ${brandName}'s key features.`, log:`Pulse generated 12 custom outreach emails for ${brandName}.` },
+    { id:'echo',  name:'Echo',  c:'#F59E0B', task:`Analyzing inbound replies regarding ${brandName}...`, thought:`Resolved prospect inquiry & auto-dispatched calendar booking link.`, log:`Echo auto-booked demo for ${brandName} prospect.` },
+    { id:'apex',  name:'Apex',  c:'#3ECF8E', task:`Evaluating campaign ROI for ${brandName}...`, thought:`Doubling down on high-converting vertical; pausing low-fit segments.`, log:`Apex reallocated campaign budget to top-performing segment.` }
+  ];
+
+  const sc = scenarios[simIdx % scenarios.length];
   simIdx++;
+
   const a = state.agents.find(ag => ag.id === sc.id);
   if (a) { a.currentTask = sc.task; a.thoughtStream = sc.thought; a.actionsToday += Math.floor(Math.random()*3)+1; }
   addLog(sc.id, sc.name, sc.c, sc.log);
@@ -1152,16 +1165,17 @@ function tick() {
     const i = Math.floor(Math.random()*SIM_NAMES.length);
     const name = SIM_NAMES[i], co = SIM_COS[i];
     state.leads.unshift({
-      id:'sim-'+Date.now(), name, title:'Founder & Owner', company:co,
+      id:'sim-'+Date.now(), name, title:'VP of Growth', company:co,
       stage:'discovered', intentScore:80+Math.floor(Math.random()*18),
       email:name.toLowerCase().replace(' ','.')+('@'+co.toLowerCase().replace(/\s/g,'')+'.com'),
       phone:'+1 (415) '+Math.floor(200+Math.random()*799)+'-'+Math.floor(1000+Math.random()*8999),
-      buyingSignals:['Hiring Floral Stylists','Large-scale installs'],
-      lastActivity:'Discovered by Nova via 536M+ GPU scan',
-      history:[{time:'Just now', text:'Nova indexed profile matching Event Designers ICP.'}]
+      buyingSignals:[`Evaluating ${brandName}`, 'Active hiring spree'],
+      lastActivity:`Discovered by Nova for ${brandName}`,
+      history:[{time:'Just now', text:`Nova indexed profile matching ${brandName} ICP.`}]
     });
     renderSidebar();
   }
+
   if (sc.id === 'echo' && Math.random() > 0.5) {
     const order = ['discovered','contacted','engaged','meeting_booked','closed'];
     const prog = state.leads.filter(l => l.stage !== 'closed');
@@ -1176,6 +1190,7 @@ function tick() {
       }
     }
   }
+
   if (state.activeView === 'command-center') { renderAgents(); renderLogs(); }
   else if (state.activeView === 'pipeline') { renderPipeline(); }
 }
