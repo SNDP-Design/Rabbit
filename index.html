@@ -462,7 +462,7 @@
       <div>
         <div style="display:flex;align-items:center;gap:8px">
           <span class="brand-name">Rabbit</span>
-          <span class="brand-chip">Autonomous GTM v2.4</span>
+          <span class="brand-chip">LangGraph Multi-Agent v2.4</span>
         </div>
         <div style="font-size:14px;color:var(--sb-text-3)">Self-Operating Go-To-Market AI Workforce</div>
       </div>
@@ -471,7 +471,7 @@
     <div class="header-center">
       <div class="status-pill">
         <div class="pulse-dot" id="pulse-dot"></div>
-        <span style="font-size:14px;font-weight:600;color:var(--sb-text)" id="engine-status-text">Autonomous Engine Active</span>
+        <span style="font-size:14px;font-weight:600;color:var(--sb-text)" id="engine-status-text">LangGraph Engine Active</span>
         <span style="font-size:14px;color:var(--sb-text-3);padding-left:10px;border-left:1px solid var(--sb-border-2);margin-left:2px">6 Agents Running</span>
       </div>
     </div>
@@ -1116,7 +1116,731 @@ document.getElementById('btn-toggle-engine').addEventListener('click', () => {
     dot.style.background = 'var(--sb-green)';
     dot.style.boxShadow = '0 0 8px var(--sb-green)';
     dot.style.animation = 'pulse 2s infinite';
-    txt.textContent = 'Autonomous Engine Active';
+    txt.textContent = 'LangGraph Engine Active';
+    btn.textContent = '⏸ Pause Engine';
+    startSim();
+  } else {
+    dot.style.background = 'var(--sb-amber)';
+    dot.style.boxShadow = '0 0 8px var(--sb-amber)';
+    dot.style.animation = 'none';
+    txt.textContent = 'Engine Paused';
+    btn.textContent = '▶ Resume Engine';
+    stopSim();
+  }
+});
+document.getElementById('btn-open-copilot').addEventListener('click', openCopilot);
+document.getElementById('lead-backdrop').addEventListener('click', e => { if (e.target.id === 'lead-backdrop') closeLead(); });
+document.getElementById('copilot-backdrop').addEventListener('click', e => { if (e.target.id === 'copilot-backdrop') closeCopilot(); });
+window.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLead(); closeCopilot(); } });
+
+// ---- SIMULATION -----------------------------------------
+const SIM_NAMES = ['Jordan Lee', 'Morgan Vance', 'Taylor Reed', 'Chris Zhang', 'Alex Mercer', 'Sam Patel'];
+const SIM_COS   = ['Apex Dynamics', 'Vanguard Tech', 'Nexus Operations', 'Prism Solutions', 'Veritas Growth', 'Beacon Labs'];
+
+let simIdx = 0, simTimer = null;
+
+function tick() {
+  if (!state.engineRunning || !state.connectedDomain) return;
+
+  const d = state.connectedDomain;
+  const brandName = d.split('.')[0].charAt(0).toUpperCase() + d.split('.')[0].slice(1);
+
+  const scenarios = [
+    { id:'koda',  name:'Koda',  c:'#3ECF8E', task:`Crawling ${d} & studying competitor matrix...`, thought:`Extracted core value proposition for ${brandName}. Competitors mapped.`, log:`Koda completed crawl of ${d} & synthesized value proposition.` },
+    { id:'atlas', name:'Atlas', c:'#6366F1', task:`Calculating ICP Fit Scores for ${brandName}...`, thought:`High-Intent Buyers vertical (94% fit, $1.69/lead) identified as top target.`, log:`Atlas computed 94% fit score for ${brandName} buyers.` },
+    { id:'nova',  name:'Nova',  c:'#0EA5E9', task:`Querying 536M+ GPU cluster for verified decision makers...`, thought:`Sourced verified CEO/VP profiles interested in ${brandName}.`, log:`Nova sourced 12 verified contacts matching ${brandName} ICP.` },
+    { id:'pulse', name:'Pulse', c:'#A855F7', task:`Writing 1:1 context-aware emails for ${brandName}...`, thought:`Crafted personalized outreach referencing ${brandName}'s key features.`, log:`Pulse generated 12 custom outreach emails for ${brandName}.` },
+    { id:'echo',  name:'Echo',  c:'#F59E0B', task:`Analyzing inbound replies regarding ${brandName}...`, thought:`Resolved prospect inquiry & auto-dispatched calendar booking link.`, log:`Echo auto-booked demo for ${brandName} prospect.` },
+    { id:'apex',  name:'Apex',  c:'#3ECF8E', task:`Evaluating campaign ROI for ${brandName}...`, thought:`Doubling down on high-converting vertical; pausing low-fit segments.`, log:`Apex reallocated campaign budget to top-performing segment.` }
+  ];
+
+  const sc = scenarios[simIdx % scenarios.length];
+  simIdx++;
+
+  const a = state.agents.find(ag => ag.id === sc.id);
+  if (a) { a.currentTask = sc.task; a.thoughtStream = sc.thought; a.actionsToday += Math.floor(Math.random()*3)+1; }
+  addLog(sc.id, sc.name, sc.c, sc.log);
+
+  if (sc.id === 'nova' && Math.random() > 0.4) {
+    const i = Math.floor(Math.random()*SIM_NAMES.length);
+    const name = SIM_NAMES[i], co = SIM_COS[i];
+    state.leads.unshift({
+      id:'sim-'+Date.now(), name, title:'VP of Growth', company:co,
+      stage:'discovered', intentScore:80+Math.floor(Math.random()*18),
+      email:name.toLowerCase().replace(' ','.')+('@'+co.toLowerCase().replace(/\s/g,'')+'.com'),
+      phone:'+1 (415) '+Math.floor(200+Math.random()*799)+'-'+Math.floor(1000+Math.random()*8999),
+      buyingSignals:[`Evaluating ${brandName}`, 'Active hiring spree'],
+      lastActivity:`Discovered by Nova for ${brandName}`,
+      history:[{time:'Just now', text:`Nova indexed profile matching ${brandName} ICP.`}]
+    });
+    renderSidebar();
+  }
+
+  if (sc.id === 'echo' && Math.random() > 0.5) {
+    const order = ['discovered','contacted','engaged','meeting_booked','closed'];
+    const prog = state.leads.filter(l => l.stage !== 'closed');
+    if (prog.length) {
+      const target = prog[Math.floor(Math.random()*prog.length)];
+      const idx = order.indexOf(target.stage);
+      if (idx > -1 && idx < order.length-1) {
+        target.stage = order[idx+1];
+        target.lastActivity = `Advanced to "${target.stage}" by Echo Agent`;
+        if (!target.history) target.history = [];
+        target.history.unshift({time:'Just now', text:`Echo advanced lead to "${target.stage}".`});
+      }
+    }
+  }
+
+  if (state.activeView === 'command-center') { renderAgents(); renderLogs(); }
+  else if (state.activeView === 'pipeline') { renderPipeline(); }
+}
+
+function addLog(agentId, agentName, color, text) {
+  const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  state.logs.unshift({id:'l'+Date.now(), time, agentId, agentName, color, text});
+  if (state.logs.length > 60) state.logs.pop();
+  if (state.activeView === 'command-center') renderLogs();
+}
+
+function startSim() { if (!simTimer) simTimer = setInterval(tick, 3000); }
+function stopSim()  { if (simTimer) { clearInterval(simTimer); simTimer = null; } }
+
+
+// ---- DOMAIN ONBOARDING LOGIC ----------------------------
+function connectProductDomainFromInput() {
+  const inp = document.getElementById('hero-domain-input') || document.getElementById('domain-input');
+  const val = inp ? inp.value.trim() : '';
+  if (!val) {
+    alert('Please enter your website URL (e.g. yourcompany.com)');
+    return;
+  }
+  applyConnectedDomain(val);
+}
+
+function promptDomainInput() {
+  const url = prompt('Enter your website domain (e.g. yourcompany.com):', state.connectedDomain || 'mycompany.com');
+  if (url && url.trim()) {
+    applyConnectedDomain(url.trim());
+  }
+}
+
+function applyConnectedDomain(domain) {
+  domain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+  state.connectedDomain = domain;
+
+  const brandName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+
+  // Update Agents
+  const koda = state.agents.find(a => a.id === 'koda');
+  if (koda) {
+    koda.currentTask = `Analyzing ${domain} — studying product features & value proposition...`;
+    koda.thoughtStream = `Crawled ${domain} homepage. Extracted core value proposition for ${brandName}. Mapped competitor landscape.`;
+    koda.actionsToday += 120;
+  }
+
+  const atlas = state.agents.find(a => a.id === 'atlas');
+  if (atlas) {
+    atlas.currentTask = `Calculating ICP fit scores for ${brandName} market verticals...`;
+    atlas.thoughtStream = `Identified top target vertical: Decision Makers & Founders (94% fit, $1.69/lead).`;
+    atlas.actionsToday += 85;
+  }
+
+  const nova = state.agents.find(a => a.id === 'nova');
+  if (nova) {
+    nova.currentTask = `Querying 536M+ profiles for buyers interested in ${brandName}...`;
+    nova.thoughtStream = `Sourced verified CEO & Founder contacts matching ${brandName}'s ideal customer profile.`;
+    nova.actionsToday += 210;
+  }
+
+  const pulse = state.agents.find(a => a.id === 'pulse');
+  if (pulse) {
+    pulse.currentTask = `Synthesizing 1:1 personalized outreach for ${brandName}...`;
+    pulse.thoughtStream = `Drafted custom outreach emails highlighting ${brandName}'s differentiation features.`;
+    pulse.actionsToday += 65;
+  }
+
+  const echo = state.agents.find(a => a.id === 'echo');
+  if (echo) {
+    echo.currentTask = `Objection & Booking AI armed with ${brandName} knowledge base...`;
+    echo.thoughtStream = `Trained on ${brandName} specs & calendar invite integration ready.`;
+    echo.actionsToday += 30;
+  }
+
+  const apex = state.agents.find(a => a.id === 'apex');
+  if (apex) {
+    apex.currentTask = `Self-optimization loop active for ${brandName} campaigns...`;
+    apex.thoughtStream = `Allocating outreach budget to top-performing verticals for ${brandName}.`;
+    apex.actionsToday += 15;
+  }
+
+  // Populate dynamic product leads
+  state.leads = [
+    {
+      id: 'l1', name: 'Jordan Lee', title: 'VP of Growth', company: 'Vanguard Dynamics', stage: 'engaged', intentScore: 94,
+      email: `jordan@vanguarddynamics.com`, phone: '+1 (415) 892-3011',
+      buyingSignals: [`Evaluating ${brandName}`, 'Active hiring spree'],
+      lastActivity: `Replied: "Interested in learning more about ${brandName}"`,
+      history: [
+        { time: '10 min ago', text: `Echo analyzed reply regarding ${brandName} and drafted demo booking link.` },
+        { time: '2 hr ago', text: `Pulse sent 1:1 personalized outreach referencing ${brandName}.` }
+      ]
+    },
+    {
+      id: 'l2', name: 'Sarah Jenkins', title: 'Founder & CEO', company: 'Horizon Tech', stage: 'contacted', intentScore: 86,
+      email: `sarah@horizontech.io`, phone: '+1 (212) 445-9980',
+      buyingSignals: [`Growth stage company`, `Looking for automation tools`],
+      lastActivity: `Pulse dispatched personal email for ${brandName}`,
+      history: [
+        { time: '1 hr ago', text: `Nova enriched verified work email & phone for Sarah.` }
+      ]
+    }
+  ];
+
+  // Populate dynamic product sequence
+  state.sequences = [
+    {
+      id: 's1', stepNumber: 1, channel: 'Email', delay: 'Day 1 — Immediate', subject: `${brandName} x {{company}}`,
+      body: `Hi {{first_name}},\n\nSaw {{company}} is scaling operations. We built ${brandName} (${domain}) using LangGraph autonomous agents to help teams streamline workflows and boost conversion rates without high manual overhead.\n\nWould you be open to a quick 10-min demo this week?\n\nBest,\nRabbit Autonomous Agent (LangGraph Powered)`,
+      metrics: { sent: 142, opened: '71.4%', replied: '18.2%' }
+    }
+  ];
+
+  // Populate dynamic inbox message
+  state.inboxMessages = [
+    {
+      id: 'm1', leadName: 'Jordan Lee', company: 'Vanguard Dynamics', sentimentKey: 'INTERESTED',
+      leadMessage: `Hi there, saw your note about ${brandName}. How does onboarding work, and can we set up a quick 15-min call on Thursday?`,
+      aiAnalysis: `High intent buying signal. Prospect asked about ${brandName} onboarding and proposed Thursday meeting time.`,
+      aiProposedReply: `Hi Jordan,\n\nOnboarding for ${brandName} takes under 60 seconds — simply input your website domain and our 6 LangGraph AI agents handle the rest.\n\nThursday works great for a 15-min call! Calendar invite sent to jordan@vanguarddynamics.com. ✓\n\nLooking forward to speaking!`,
+      status: 'LangGraph Echo AI Replied & Calendar Invite Sent'
+    }
+  ];
+
+  // Populate dynamic optimization logs
+  state.optimizationLogs = [
+    { id: 'o1', time: 'Just now', type: 'LangGraph StateGraph Execution', description: `LangGraph StateGraph compiled with MemorySaver checkpointer. Executed nodes: koda_node -> atlas_node -> nova_node -> pulse_node -> echo_node -> apex_node.` },
+    { id: 'o2', time: 'Just now', type: 'ICP Segmentation', description: `Founders & Growth VP vertical identified as 94% fit score for ${brandName}.` }
+  ];
+
+  addLog('koda', 'Koda (LangGraph)', '#3ECF8E', `LANGGRAPH STATEGRAPH EXECUTED FOR: ${domain}. Nodes compiled & persisted with MemorySaver thread_id.`);
+  renderSidebar();
+  renderView();
+}renderView();
+}
+
+// ---- VIEWS ----------------------------------------------
+function renderView() {
+  switch (state.activeView) {
+    case 'command-center': renderCommandCenter(); break;
+    case 'campaigns':      renderCampaigns();     break;
+    case 'pipeline':       renderPipeline();      break;
+    case 'sequences':      renderSequences();     break;
+    case 'inbox':          renderInbox();         break;
+    case 'optimization':   renderOptimization();  break;
+  }
+}
+
+// ---- COMMAND CENTER -------------------------------------
+function renderCommandCenter() {
+  const c = document.getElementById('view-command-center');
+  const dVal = state.connectedDomain || '';
+  c.innerHTML = `
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="page-title">Command Center</div>
+        <div class="page-sub">Live telemetry from your 6-agent autonomous GTM workforce</div>
+      </div>
+    </div>
+
+    <!-- Product Setup Hero Banner -->
+    <div class="card" style="border-color:var(--sb-green-border);margin-bottom:20px;background:linear-gradient(135deg,rgba(28,28,28,0.95),rgba(62,207,142,0.08))">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--sb-text);margin-bottom:4px">🌐 Connect Your Product Domain</div>
+          <div style="font-size:14px;color:var(--sb-text-2)">Enter your website URL — Koda Agent will crawl your features, extract your value proposition, and deploy all 6 autonomous agents for your product.</div>
+        </div>
+        <span class="chip chip-green">⚡ 60-Second Setup</span>
+      </div>
+      <div style="display:flex;gap:10px">
+        <input id="hero-domain-input" type="text" placeholder="e.g. yourcompany.com or app.myproduct.io" value="${dVal}" style="flex:1;padding:10px 14px">
+        <button class="btn btn-primary" onclick="connectProductDomainFromInput()">⚡ Deploy AI Workforce for My Product</button>
+      </div>
+      <div id="hero-domain-status" style="margin-top:10px;display:${dVal ? 'block' : 'none'}">
+        <div style="font-size:14px;color:var(--sb-green);font-weight:600">✓ Active Product Connected: <code style="font-family:var(--font);color:var(--sb-green);font-size:14px">${dVal}</code> — All 6 agents running custom pipeline for your product.</div>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      ${sc('◈','rgba(62,207,142,0.12)','var(--sb-green)','6','Autonomous Agents','● All systems nominal')}
+      ${sc('◉','rgba(14,165,233,0.12)','#0EA5E9','536M+','People Profiles','● 105M+ companies indexed')}
+      ${sc('◎','rgba(168,85,247,0.12)','var(--sb-purple)',state.leads.length,'Active Prospects','● 74.2% email open rate')}
+      ${sc('◷','rgba(245,158,11,0.12)','var(--sb-amber)','$1.69','Cost / Warm Lead','● $0.03 per email sent')}
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:0.9rem;font-weight:600;color:var(--sb-text)">AI Workforce Matrix</div>
+        <span style="font-size:14px;color:var(--sb-text-3)">Real-time execution telemetry</span>
+      </div>
+      <div class="grid-3" id="workforce-grid"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">◈ Agent Data Mesh</div>
+          <span class="chip chip-green">Live</span>
+        </div>
+        <svg class="graph-svg" id="graph-svg" viewBox="0 0 560 220"></svg>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚡ Agent Activity Stream</div>
+          <span class="chip chip-green">Live</span>
+        </div>
+        <div class="log-stream" id="log-stream"></div>
+      </div>
+    </div>`;
+
+  renderAgents();
+  renderGraph();
+  renderLogs();
+}
+
+function sc(icon, bg, color, val, label, trend) {
+  return `<div class="stat-card">
+    <div class="stat-icon" style="background:${bg};color:${color}">${icon}</div>
+    <div>
+      <div class="stat-val">${val}</div>
+      <div class="stat-label">${label}</div>
+      <div class="stat-trend">${trend}</div>
+    </div>
+  </div>`;
+}
+
+function renderAgents() {
+  const g = document.getElementById('workforce-grid');
+  if (!g) return;
+  g.innerHTML = state.agents.map(a => `
+    <div class="card agent-card" style="--ac:${a.color}">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <div class="agent-avatar" style="background:${a.color}18;border-color:${a.color}30">${a.avatar}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;color:var(--sb-text)">${a.name}</div>
+          <div style="font-size:14px;color:var(--sb-text-2)">${a.role}</div>
+        </div>
+        <span class="chip chip-green" style="font-size:14px">Active</span>
+      </div>
+      <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Current Task</div>
+      <div class="agent-task" style="border-left-color:${a.color}">${a.currentTask}</div>
+      <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Thought Process</div>
+      <div class="agent-thought" style="color:${a.color}">"${a.thoughtStream}"</div>
+      <div class="agent-footer">
+        <span>Actions: <strong style="color:var(--sb-text)">${a.actionsToday.toLocaleString()}</strong></span>
+        <span>Efficiency: <strong style="color:var(--sb-green)">${a.efficiency}</strong></span>
+      </div>
+    </div>`).join('');
+}
+
+function renderGraph() {
+  const svg = document.getElementById('graph-svg');
+  if (!svg) return;
+  const nodes = [
+    { x:70,  y:110, c:'#3ECF8E', e:'🔍', l:'Koda' },
+    { x:175, y:50,  c:'#6366F1', e:'📊', l:'Atlas' },
+    { x:175, y:170, c:'#0EA5E9', e:'🎯', l:'Nova' },
+    { x:290, y:80,  c:'#A855F7', e:'✍', l:'Pulse' },
+    { x:400, y:110, c:'#F59E0B', e:'💬', l:'Echo' },
+    { x:500, y:110, c:'#3ECF8E', e:'🧠', l:'Apex' }
+  ];
+  const edges = [[0,1],[0,2],[1,3],[2,3],[3,4],[4,5],[1,5]];
+  const lines = edges.map(([a,b]) => {
+    const na = nodes[a], nb = nodes[b];
+    return `<line x1="${na.x}" y1="${na.y}" x2="${nb.x}" y2="${nb.y}" stroke="rgba(62,207,142,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+  }).join('');
+  const circles = nodes.map(n => `
+    <g>
+      <circle cx="${n.x}" cy="${n.y}" r="22" fill="${n.c}10" stroke="${n.c}" stroke-width="1.5"/>
+      <circle cx="${n.x}" cy="${n.y}" r="28" fill="${n.c}05" stroke="${n.c}" stroke-width="8" stroke-opacity="0.08"/>
+      <text x="${n.x}" y="${n.y + 5}" text-anchor="middle" font-size="13">${n.e}</text>
+      <text x="${n.x}" y="${n.y + 38}" text-anchor="middle" font-size="9" fill="${n.c}" font-family="Inter,sans-serif" font-weight="600">${n.l}</text>
+    </g>`).join('');
+  svg.innerHTML = lines + circles;
+}
+
+function renderLogs() {
+  const s = document.getElementById('log-stream');
+  if (!s) return;
+  s.innerHTML = state.logs.map(l => `
+    <div class="log-entry" style="--lc:${l.color}">
+      <span class="log-time">${l.time}</span>
+      <span class="log-agent">${l.agentName}</span>
+      <span class="log-text">${l.text}</span>
+    </div>`).join('');
+}
+
+// ---- CAMPAIGNS ------------------------------------------
+function renderCampaigns() {
+  const c = document.getElementById('view-campaigns');
+  const d = state.connectedDomain;
+  const brandName = d ? (d.split('.')[0].charAt(0).toUpperCase() + d.split('.')[0].slice(1)) : '';
+
+  const segs = d ? [
+    { name: `${brandName} High-Intent B2B Buyers`, fit: '94%', status: 'Scaling', cost: '$1.69' },
+    { name: `${brandName} Enterprise Decision Makers`, fit: '88%', status: 'Working', cost: '$2.40' },
+    { name: `${brandName} Mid-Market Accounts`, fit: '79%', status: 'Working', cost: '$3.10' },
+    { name: `Low-Fit Pilot Segment`, fit: '42%', status: 'Paused', cost: '$6.50' }
+  ] : [];
+
+  c.innerHTML = `
+    <div class="page-header">
+      <div class="page-title">Campaigns & ICP Targeting</div>
+      <div class="page-sub">Koda studies your domain. Atlas scores verticals. Apex scales what works.</div>
+    </div>
+
+    <div class="card" style="border-color:var(--sb-green-border);margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:var(--sb-text);margin-bottom:2px">⚡ 60-Second Domain Autopilot</div>
+          <div style="font-size:14px;color:var(--sb-text-2)">Paste your domain — 6 AI agents find clients while you sleep.</div>
+        </div>
+        <span class="chip chip-green">🎁 $30 Free Credits</span>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <input id="domain-input" type="text" value="${d}" placeholder="yourcompany.com" style="flex:1;padding:10px 14px">
+        <button class="btn btn-primary" onclick="connectProductDomainFromInput()">⚡ Launch Autopilot</button>
+      </div>
+      <div id="domain-box" style="background:var(--sb-bg);border:1px solid var(--sb-border);border-radius:var(--radius-md);padding:14px">
+        ${d ? `
+          <div style="font-size:14px;font-weight:600;color:var(--sb-green);margin-bottom:6px">✓ Koda completed analysis of ${d}</div>
+          <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target Product:</strong> <code style="color:var(--sb-green);font-family:var(--font)">${d}</code> — Autopilot sequence active across all 6 agents for ${brandName}.</div>
+          <span class="chip chip-green">⚡ 6 Agents Active & Operating</span>
+        ` : `
+          <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);margin-bottom:6px">● Koda Agent — Waiting for website URL input above</div>
+          <div style="font-size:14px;color:var(--sb-text-3)">Enter your product domain above to launch website crawl & competitor synthesis.</div>
+        `}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📊 Atlas Fit Score Segmentation</div>
+        <span class="chip chip-green">${d ? 'Apex Auto-Scaling' : 'Awaiting Domain'}</span>
+      </div>
+      ${segs.length > 0 ? `
+        <table class="data-table">
+          <thead>
+            <tr><th>Vertical Segment</th><th>Fit Score</th><th>Apex Status</th><th>Cost / Lead</th></tr>
+          </thead>
+          <tbody>
+            ${segs.map(s => `
+              <tr style="${s.status==='Paused'?'opacity:0.45':''}">
+                <td style="font-weight:500;color:var(--sb-text)">${s.name}</td>
+                <td><code style="font-family:var(--font);color:var(--sb-green);font-size:14px;font-weight:600">${s.fit}</code></td>
+                <td><span class="chip ${s.status==='Scaling'?'chip-green':s.status==='Working'?'chip-blue':'chip-muted'}">${s.status}</span></td>
+                <td style="font-weight:600;color:${s.status==='Paused'?'var(--sb-text-3)':'var(--sb-green)'}">${s.cost}/lead</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      ` : `
+        <div class="empty-col" style="padding:30px">
+          No campaigns or verticals active yet.<br>
+          <span style="color:var(--sb-text-3)">Connect your product domain above to automatically calculate ICP fit scores.</span>
+        </div>
+      `}
+    </div>`;
+}
+
+function launchAutopilot() {
+  connectProductDomainFromInput();
+}
+
+// ---- PIPELINE -------------------------------------------
+function renderPipeline() {
+  const c = document.getElementById('view-pipeline');
+  c.innerHTML = `
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="page-title">Pipeline CRM</div>
+        <div class="page-sub">Real-time prospect intent scoring and automated deal progression.</div>
+      </div>
+      <div style="font-size:14px;color:var(--sb-text-2)">Total Prospects: <strong style="color:var(--sb-green)">${state.leads.length}</strong></div>
+    </div>
+    <div class="kanban">
+      ${STAGES.map(stage => {
+        const leads = state.leads.filter(l => l.stage === stage.id);
+        return `<div class="kanban-col">
+          <div class="kanban-header">
+            <span style="color:${stage.color}">${stage.label}</span>
+            <span class="chip" style="background:${stage.color}18;color:${stage.color};border:1px solid ${stage.color}30;font-size:14px">${leads.length}</span>
+          </div>
+          ${leads.map(lead => `
+            <div class="lead-card" onclick="openLead('${lead.id}')">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px">
+                <div style="font-weight:600;color:var(--sb-text);font-size:14px">${lead.name}</div>
+                <span class="chip ${lead.intentScore>=85?'chip-green':'chip-amber'}" style="font-size:14px">${lead.intentScore}</span>
+              </div>
+              <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:2px">${lead.title}</div>
+              <div style="font-size:14px;color:var(--sb-green);font-weight:500;margin-bottom:7px">${lead.company}</div>
+              <div style="font-size:14px;color:var(--sb-text-3);background:var(--sb-bg);padding:5px 7px;border-radius:var(--radius-sm);line-height:1.4">⚡ ${lead.lastActivity}</div>
+            </div>`).join('')}
+          ${leads.length===0?'<div class="empty-col">No prospects</div>':''}
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function openLead(id) {
+  const lead = state.leads.find(l => l.id === id);
+  if (!lead) return;
+  const d = document.getElementById('lead-drawer');
+  d.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--sb-border)">
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--sb-text)">${lead.name}</div>
+        <div style="font-size:14px;color:var(--sb-green)">${lead.title} @ ${lead.company}</div>
+      </div>
+      <button class="btn btn-default" onclick="closeLead()" style="padding:5px 10px;font-size:14px">✕ Close</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      <div style="background:var(--sb-bg);border:1px solid var(--sb-border);padding:10px;border-radius:var(--radius-md)">
+        <div style="font-size:14px;color:var(--sb-text-3);margin-bottom:3px">Verified Email</div>
+        <div style="font-size:14px;font-family:var(--font);color:var(--sb-text)">${lead.email}</div>
+      </div>
+      <div style="background:var(--sb-bg);border:1px solid var(--sb-border);padding:10px;border-radius:var(--radius-md)">
+        <div style="font-size:14px;color:var(--sb-text-3);margin-bottom:3px">Verified Phone</div>
+        <div style="font-size:14px;font-family:var(--font);color:var(--sb-text)">${lead.phone}</div>
+      </div>
+    </div>
+    <div style="margin-bottom:18px">
+      <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Buying Intent Signals</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${(lead.buyingSignals||[]).map(s => `<span class="chip chip-green">⚡ ${s}</span>`).join('')}
+      </div>
+    </div>
+    <div>
+      <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Agent Activity Log</div>
+      ${(lead.history||[]).map(h => `
+        <div style="background:var(--sb-bg);border-left:2px solid var(--sb-green);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:7px">
+          <div style="font-size:14px;color:var(--sb-text-3);margin-bottom:2px">${h.time}</div>
+          <div style="font-size:14px;color:var(--sb-text-2)">${h.text}</div>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('lead-backdrop').classList.remove('hidden');
+}
+function closeLead() { document.getElementById('lead-backdrop').classList.add('hidden'); }
+
+// ---- SEQUENCES ------------------------------------------
+function renderSequences() {
+  const c = document.getElementById('view-sequences');
+  c.innerHTML = `
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="page-title">Sequence Studio</div>
+        <div class="page-sub">Pulse Agent auto-generates tone-adapted copy with dynamic variables for each channel.</div>
+      </div>
+      <button class="btn btn-primary" onclick="optimizeSequences()">✦ AI Auto-Optimize All</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      ${state.sequences.map(seq => `
+        <div class="card" style="border-left:3px solid ${seq.channel==='Email'?'var(--sb-green)':'var(--sb-purple)'}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="chip chip-muted">Step ${seq.stepNumber}</span>
+              <span style="font-size:14px;font-weight:600;color:${seq.channel==='Email'?'var(--sb-green)':'var(--sb-purple)'}">${seq.channel}</span>
+              <span style="font-size:14px;color:var(--sb-text-3)">Trigger: ${seq.delay}</span>
+            </div>
+            <div style="display:flex;gap:14px;font-size:14px;color:var(--sb-text-2)">
+              <span>Sent: <strong style="color:var(--sb-text)">${seq.metrics.sent}</strong></span>
+              ${seq.metrics.opened?`<span>Open: <strong style="color:var(--sb-green)">${seq.metrics.opened}</strong></span>`:''}
+              ${seq.metrics.accepted?`<span>Accept: <strong style="color:var(--sb-green)">${seq.metrics.accepted}</strong></span>`:''}
+              <span>Reply: <strong style="color:var(--sb-amber)">${seq.metrics.replied}</strong></span>
+            </div>
+          </div>
+          ${seq.subject?`<div style="font-size:14px;font-weight:500;color:var(--sb-text);margin-bottom:8px">Subject: <code style="font-family:var(--font);color:var(--sb-green)">${seq.subject}</code></div>`:''}
+          <div style="background:var(--sb-bg);border:1px solid var(--sb-border);border-radius:var(--radius-md);padding:14px;font-size:14px;color:var(--sb-text-2);white-space:pre-wrap;line-height:1.7;font-family:var(--font)">${seq.body}</div>
+          <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+            <button class="btn btn-default" style="font-size:14px;padding:5px 10px">✎ Edit Copy</button>
+            <button class="btn btn-outline" style="font-size:14px;padding:5px 10px">⚡ Test Variables</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+function optimizeSequences() {
+  addLog('pulse','Pulse','#A855F7','Pulse Agent auto-optimized dynamic variables & tone across all sequence steps.');
+}
+
+// ---- INBOX ----------------------------------------------
+function renderInbox() {
+  const c = document.getElementById('view-inbox');
+  c.innerHTML = `
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="page-title">Autonomous Inbox</div>
+        <div class="page-sub">Echo Agent classifies replies, resolves objections, and auto-books meetings.</div>
+      </div>
+      <span class="chip chip-green" style="font-size:14px;padding:5px 12px">⚡ Auto-Booking: Active</span>
+    </div>
+    <div class="grid-2">
+      ${state.inboxMessages.map(msg => {
+        const s = SENTIMENTS[msg.sentimentKey] || { label:'Inbound', color:'var(--sb-green)' };
+        return `<div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+              <div>
+                <div style="font-size:1rem;font-weight:600;color:var(--sb-text)">${msg.leadName}</div>
+                <div style="font-size:14px;color:var(--sb-green)">${msg.company}</div>
+              </div>
+              <span class="chip" style="background:${s.color}18;color:${s.color};border:1px solid ${s.color}30">${s.label}</span>
+            </div>
+            <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">Inbound Message</div>
+            <div style="background:var(--sb-bg);border:1px solid var(--sb-border);border-radius:var(--radius-md);padding:11px;font-size:14px;color:var(--sb-text-2);font-style:italic;margin-bottom:12px">"${msg.leadMessage}"</div>
+            <div style="font-size:14px;font-weight:600;color:var(--sb-amber);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">Echo Agent Analysis</div>
+            <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:12px">${msg.aiAnalysis}</div>
+            <div style="font-size:14px;font-weight:600;color:var(--sb-green);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">Autonomous Reply</div>
+            <div style="background:rgba(62,207,142,0.05);border:1px solid var(--sb-green-border);border-radius:var(--radius-md);padding:12px;font-size:14px;color:var(--sb-text);white-space:pre-wrap;margin-bottom:14px">${msg.aiProposedReply}</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--sb-border);padding-top:12px">
+            <span style="font-size:14px;color:var(--sb-green);font-weight:500">✓ ${msg.status}</span>
+            <button class="btn btn-primary" onclick="sendReply('${msg.id}')" style="font-size:14px;padding:6px 13px">↑ Re-Send Invite</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+function sendReply(id) {
+  const msg = state.inboxMessages.find(m => m.id === id);
+  if (msg) {
+    msg.status = 'Sent & Delivered ✓';
+    addLog('echo','Echo','#F59E0B',`Dispatch confirmed — counter-reply sent to ${msg.leadName} (${msg.company}).`);
+    renderInbox();
+  }
+}
+
+// ---- OPTIMIZATION ---------------------------------------
+function renderOptimization() {
+  const c = document.getElementById('view-optimization');
+  c.innerHTML = `
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="page-title">Self-Optimization Engine</div>
+        <div class="page-sub">Apex runs continuous A/B tests, sentiment tuning, and channel reallocation.</div>
+      </div>
+      <span class="chip chip-green" style="font-size:14px;padding:5px 12px">🧠 Self-Healing: Enabled</span>
+    </div>
+    <div class="grid-4" style="margin-bottom:20px">
+      ${sc('◷','rgba(62,207,142,0.12)','var(--sb-green)','67.4%','Avg Email Open Rate','↑ +14.2% AI Boosted')}
+      ${sc('◉','rgba(14,165,233,0.12)','#0EA5E9','18.6%','Positive Reply Rate','↑ +6.8% vs Industry')}
+      ${sc('◈','rgba(168,85,247,0.12)','var(--sb-purple)','23','Meetings Booked','$380k Pipeline Value')}
+      ${sc('◎','rgba(245,158,11,0.12)','var(--sb-amber)','$182','Cost / Qualified Lead','↓ -54% CAC Reduction')}
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Apex Decision Logs</div>
+          <span class="chip chip-green">Autonomous</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${state.optimizationLogs.map(l => `
+            <div style="background:var(--sb-bg);border:1px solid var(--sb-border);border-left:2px solid var(--sb-green);border-radius:var(--radius-md);padding:11px 13px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:14px;font-weight:600;color:var(--sb-green)">${l.type}</span>
+                <span style="font-size:14px;color:var(--sb-text-3)">${l.time}</span>
+              </div>
+              <div style="font-size:14px;color:var(--sb-text-2)">${l.description}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Channel ROI Allocation</div>
+          <span class="chip chip-muted">Apex Auto-Managed</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          ${[
+            { label:'Cold Email Sequences',           pct:55, color:'var(--sb-green)',  roi:'3.4x ROI' },
+            { label:'LinkedIn InMail & Connection',   pct:35, color:'var(--sb-purple)', roi:'4.1x ROI' },
+            { label:'X (Twitter) DM & Intent Signals',pct:10, color:'var(--sb-amber)',  roi:'2.2x ROI' }
+          ].map(ch => `<div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
+              <span style="color:var(--sb-text-2)">${ch.label}</span>
+              <strong style="color:${ch.color}">${ch.pct}% — ${ch.roi}</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${ch.pct}%;background:${ch.color}"></div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ---- COPILOT --------------------------------------------
+const PRESETS = [
+  'Pivot target market to Series A-B FinTech startups in EU and adjust tone to founder-to-founder direct style.',
+  'Increase response aggression on pricing objections and offer free 14-day ROI trial.',
+  'Double down on LinkedIn connection drips for prospects with hiring intent signals.'
+];
+window._presets = PRESETS;
+
+function openCopilot() {
+  const m = document.getElementById('copilot-modal');
+  m.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--sb-border)">
+      <div>
+        <div style="font-size:1rem;font-weight:700;color:var(--sb-text);margin-bottom:2px">Agent Co-Pilot</div>
+        <div style="font-size:14px;color:var(--sb-text-2)">Issue natural language directives to steer all 6 agents.</div>
+      </div>
+      <button class="btn btn-default" onclick="closeCopilot()" style="padding:5px 10px;font-size:14px">✕</button>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:14px;font-weight:500;color:var(--sb-text-2);display:block;margin-bottom:6px">Directive</label>
+      <textarea id="copilot-input" rows="4" placeholder="e.g. Pivot to Series A-B FinTech CTOs in North America, increase urgency by 15%..."
+        style="width:100%;padding:11px 13px;border-radius:var(--radius-md);resize:none"></textarea>
+    </div>
+    <div style="margin-bottom:18px">
+      <div style="font-size:14px;font-weight:600;color:var(--sb-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Quick Presets</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <button class="btn btn-default" onclick="setPreset(0)" style="font-size:14px">⚡ EU FinTech Pivot</button>
+        <button class="btn btn-default" onclick="setPreset(1)" style="font-size:14px">💡 Push ROI Trial</button>
+        <button class="btn btn-default" onclick="setPreset(2)" style="font-size:14px">🎯 LinkedIn Drip</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn btn-default" onclick="closeCopilot()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitCopilot()">↑ Dispatch to Workforce</button>
+    </div>`;
+  document.getElementById('copilot-backdrop').classList.remove('hidden');
+}
+function closeCopilot() { document.getElementById('copilot-backdrop').classList.add('hidden'); }
+function setPreset(i) {
+  const inp = document.getElementById('copilot-input');
+  if (inp) { inp.value = window._presets[i]; inp.focus(); }
+}
+function submitCopilot() {
+  const inp = document.getElementById('copilot-input');
+  const text = inp ? inp.value.trim() : '';
+  if (text) {
+    addLog('apex','Apex','#3ECF8E',`DIRECTIVE: "${text.substring(0,60)}..." — Updating strategies across all 6 agents.`);
+    const apex = state.agents.find(a => a.id === 'apex');
+    if (apex) apex.thoughtStream = `Re-calibrating per directive: "${text.substring(0,45)}..."`;
+    closeCopilot();
+  }
+}
+
+// ---- ENGINE TOGGLE --------------------------------------
+let engineRunning = true;
+document.getElementById('btn-toggle-engine').addEventListener('click', () => {
+  engineRunning = !engineRunning;
+  state.engineRunning = engineRunning;
+  const dot = document.getElementById('pulse-dot');
+  const txt = document.getElementById('engine-status-text');
+  const btn = document.getElementById('btn-toggle-engine');
+  if (engineRunning) {
+    dot.style.background = 'var(--sb-green)';
+    dot.style.boxShadow = '0 0 8px var(--sb-green)';
+    dot.style.animation = 'pulse 2s infinite';
+    txt.textContent = 'LangGraph Engine Active';
     btn.textContent = '⏸ Pause Engine';
     startSim();
   } else {
@@ -1337,14 +2061,4 @@ Looking forward to speaking!`,
 
   addLog('koda', 'Koda', '#3ECF8E', `DEPLOYED AI WORKFORCE FOR: ${domain}. Koda completed website crawl and configured all 6 agents for ${brandName}.`);
   renderSidebar();
-  renderView();
-}
-
-// ---- BOOT -----------------------------------------------
-
-renderSidebar();
-renderView();
-startSim();
-</script>
-</body>
-</html>
+  
