@@ -7,7 +7,7 @@
   <meta name="description" content="Rabbit - Self-operating GTM AI platform powered by 6 autonomous agents. Discovers ICPs, enriches leads, writes personalized sequences, handles objections, and optimizes ROI autonomously.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     /* =====================================================
        SUPABASE DESIGN SYSTEM — Rabbit GTM Platform
@@ -46,7 +46,7 @@
 
       /* Type */
       --font:     'Inter', system-ui, -apple-system, sans-serif;
-      --font-mono:'Fira Code', monospace;
+      --font-mono:'Inter', sans-serif;
 
       /* Geometry */
       --radius-sm: 6px;
@@ -308,7 +308,7 @@
       border-left: 2px solid var(--ac, var(--sb-green));
       border-radius: var(--radius-md);
       padding: 8px 10px;
-      font-family: var(--font-mono); font-size:14px;
+      font-family: var(--font); font-size:14px;
       color: var(--sb-text-2);
       margin: 8px 0; min-height: 40px;
     }
@@ -330,7 +330,7 @@
     /* ---- LOG STREAM ---- */
     .log-stream {
       height: 240px; overflow-y: auto;
-      font-family: var(--font-mono); font-size:14px;
+      font-family: var(--font); font-size:14px;
       display: flex; flex-direction: column; gap: 4px;
       padding: 10px;
       background: var(--sb-bg);
@@ -800,7 +800,7 @@ function renderCampaigns() {
       </div>
       <div id="domain-box" style="background:var(--sb-bg);border:1px solid var(--sb-border);border-radius:var(--radius-md);padding:14px">
         <div style="font-size:14px;font-weight:600;color:var(--sb-green);margin-bottom:6px">● Koda Agent — Studying target domain & competitor matrix</div>
-        <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target:</strong> <code style="color:var(--sb-green);font-family:var(--font-mono)">larksilk.com</code> — Wholesale silk flowers for hotels, restaurants & florists (45+ yrs).</div>
+        <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target:</strong> <code style="color:var(--sb-green);font-family:var(--font)">larksilk.com</code> — Wholesale silk flowers for hotels, restaurants & florists (45+ yrs).</div>
         <div style="display:flex;flex-wrap:wrap;gap:6px">
           ${['afloral.com','nearlynatural.com','silksareforever.com'].map(d => `<span class="chip chip-muted">Competitor: ${d}</span>`).join('')}
         </div>
@@ -820,7 +820,7 @@ function renderCampaigns() {
           ${segs.map(s => `
             <tr style="${s.status==='Paused'?'opacity:0.45':''}">
               <td style="font-weight:500;color:var(--sb-text)">${s.name}</td>
-              <td><code style="font-family:var(--font-mono);color:var(--sb-green);font-size:14px;font-weight:600">${s.fit}</code></td>
+              <td><code style="font-family:var(--font);color:var(--sb-green);font-size:14px;font-weight:600">${s.fit}</code></td>
               <td><span class="chip ${s.status==='Scaling'?'chip-green':s.status==='Working'?'chip-blue':'chip-muted'}">${s.status}</span></td>
               <td style="font-weight:600;color:${s.status==='Paused'?'var(--sb-text-3)':'var(--sb-green)'}">${s.cost}/lead</td>
             </tr>`).join('')}
@@ -833,7 +833,7 @@ function launchAutopilot() {
   const domain = document.getElementById('domain-input').value.trim() || 'larksilk.com';
   document.getElementById('domain-box').innerHTML = `
     <div style="font-size:14px;font-weight:600;color:var(--sb-green);margin-bottom:6px">✓ Koda completed instant analysis of ${domain}</div>
-    <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target:</strong> <code style="color:var(--sb-green);font-family:var(--font-mono)">${domain}</code> — Autopilot sequence dispatched to all 6 agents.</div>
+    <div style="font-size:14px;color:var(--sb-text-2);margin-bottom:8px"><strong style="color:var(--sb-text)">Target:</strong> <code style="color:var(--sb-green);font-family:var(--font)">${domain}</code> — Autopilot sequence dispatched to all 6 agents.</div>
     <span class="chip chip-green">⚡ 6 Agents Active & Operating</span>`;
   addLog('koda','Koda','#3ECF8E',`Autopilot launched for ${domain}. Studying domain offering & competitor landscape.`);
 }
@@ -888,11 +888,11 @@ function openLead(id) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
       <div style="background:var(--sb-bg);border:1px solid var(--sb-border);padding:10px;border-radius:var(--radius-md)">
         <div style="font-size:14px;color:var(--sb-text-3);margin-bottom:3px">Verified Email</div>
-        <div style="font-size:14px;font-family:var(--font-mono);color:var(--sb-text)">${lead.email}</div>
+        <div style="font-size:14px;font-family:var(--font);color:var(--sb-text)">${lead.email}</div>
       </div>
       <div style="background:var(--sb-bg);border:1px solid var(--sb-border);padding:10px;border-radius:var(--radius-md)">
         <div style="font-size:14px;color:var(--sb-text-3);margin-bottom:3px">Verified Phone</div>
-        <div style="font-size:14px;font-family:var(--font-mono);color:var(--sb-text)">${lead.phone}</div>
+        <div style="font-size:14px;font-family:var(--font);color:var(--sb-text)">${lead.phone}</div>
       </div>
     </div>
     <div style="margin-bottom:18px">
@@ -940,8 +940,8 @@ function renderSequences() {
               <span>Reply: <strong style="color:var(--sb-amber)">${seq.metrics.replied}</strong></span>
             </div>
           </div>
-          ${seq.subject?`<div style="font-size:14px;font-weight:500;color:var(--sb-text);margin-bottom:8px">Subject: <code style="font-family:var(--font-mono);color:var(--sb-green)">${seq.subject}</code></div>`:''}
-          <div style="background:var(--sb-bg);border:1px solid var(--sb-border);border-radius:var(--radius-md);padding:14px;font-size:14px;color:var(--sb-text-2);white-space:pre-wrap;line-height:1.7;font-family:var(--font-mono)">${seq.body}</div>
+          ${seq.subject?`<div style="font-size:14px;font-weight:500;color:var(--sb-text);margin-bottom:8px">Subject: <code style="font-family:var(--font);color:var(--sb-green)">${seq.subject}</code></div>`:''}
+          <div style="background:var(--sb-bg);border:1px solid var(--sb-border);border-radius:var(--radius-md);padding:14px;font-size:14px;color:var(--sb-text-2);white-space:pre-wrap;line-height:1.7;font-family:var(--font)">${seq.body}</div>
           <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
             <button class="btn btn-default" style="font-size:14px;padding:5px 10px">✎ Edit Copy</button>
             <button class="btn btn-outline" style="font-size:14px;padding:5px 10px">⚡ Test Variables</button>

@@ -31,8 +31,8 @@
   --text-muted: #94A3B8;
   --text-dim: #64748B;
   
-  --font-sans: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Fira Code', monospace;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Inter', system-ui, -apple-system, sans-serif;
 
   /* Geometry & Shadows */
   --radius-sm: 8px;
@@ -443,7 +443,7 @@ body {
   background: rgba(0, 0, 0, 0.3);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   color: #E2E8F0;
   margin: 10px 0;
@@ -475,7 +475,7 @@ body {
 .log-stream {
   height: 280px;
   overflow-y: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.8rem;
   display: flex;
   flex-direction: column;

@@ -39,7 +39,7 @@ export function renderSequenceView(container, state, onOptimize) {
 
           ${seq.subject ? `
             <div style="font-size: 0.85rem; font-weight: 700; color: #FFF; margin-bottom: 8px;">
-              Subject: <span style="font-family: var(--font-mono); color: var(--cyan);">${seq.subject}</span>
+              Subject: <span style="font-family: var(--font-sans); color: var(--cyan);">${seq.subject}</span>
             </div>
           ` : ''}
 

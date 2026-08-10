@@ -49,43 +49,43 @@ export function renderWorkflowGraph(container, agents) {
         <!-- 1. Koda -->
         <g transform="translate(90, 130)" class="node-group">
           <circle r="34" fill="#090D21" stroke="#06B6D4" stroke-width="3" filter="url(#glow)"/>
-          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Outfit" font-weight="700" font-size="13">Koda</text>
-          <text text-anchor="middle" dy="14" fill="#06B6D4" font-family="Outfit" font-size="9">Domain Learner</text>
+          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="13">Koda</text>
+          <text text-anchor="middle" dy="14" fill="#06B6D4" font-family="Inter" font-size="9">Domain Learner</text>
         </g>
 
         <!-- 2. Atlas -->
         <g transform="translate(230, 70)" class="node-group">
           <circle r="30" fill="#090D21" stroke="#6366F1" stroke-width="3" filter="url(#glow)"/>
-          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Outfit" font-weight="700" font-size="12">Atlas</text>
-          <text text-anchor="middle" dy="14" fill="#6366F1" font-family="Outfit" font-size="9">Fit Scorer</text>
+          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Atlas</text>
+          <text text-anchor="middle" dy="14" fill="#6366F1" font-family="Inter" font-size="9">Fit Scorer</text>
         </g>
 
         <!-- 3. Nova -->
         <g transform="translate(370, 130)" class="node-group">
           <circle r="34" fill="#090D21" stroke="#EC4899" stroke-width="3" filter="url(#glow)"/>
-          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Outfit" font-weight="700" font-size="13">Nova</text>
-          <text text-anchor="middle" dy="14" fill="#EC4899" font-family="Outfit" font-size="9">536M+ Sourcing</text>
+          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="13">Nova</text>
+          <text text-anchor="middle" dy="14" fill="#EC4899" font-family="Inter" font-size="9">536M+ Sourcing</text>
         </g>
 
         <!-- 4. Pulse -->
         <g transform="translate(510, 190)" class="node-group">
           <circle r="30" fill="#090D21" stroke="#A855F7" stroke-width="3" filter="url(#glow)"/>
-          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Outfit" font-weight="700" font-size="12">Pulse</text>
-          <text text-anchor="middle" dy="14" fill="#A855F7" font-family="Outfit" font-size="9">1:1 Writer</text>
+          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Pulse</text>
+          <text text-anchor="middle" dy="14" fill="#A855F7" font-family="Inter" font-size="9">1:1 Writer</text>
         </g>
 
         <!-- 5. Echo -->
         <g transform="translate(630, 100)" class="node-group">
           <circle r="32" fill="#090D21" stroke="#F59E0B" stroke-width="3" filter="url(#glow)"/>
-          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Outfit" font-weight="700" font-size="12">Echo</text>
-          <text text-anchor="middle" dy="14" fill="#F59E0B" font-family="Outfit" font-size="9">Reply Booker</text>
+          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Echo</text>
+          <text text-anchor="middle" dy="14" fill="#F59E0B" font-family="Inter" font-size="9">Reply Booker</text>
         </g>
 
         <!-- 6. Apex -->
         <g transform="translate(730, 160)" class="node-group">
           <circle r="34" fill="#090D21" stroke="#10B981" stroke-width="3" filter="url(#glow)"/>
-          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Outfit" font-weight="700" font-size="13">Apex</text>
-          <text text-anchor="middle" dy="14" fill="#10B981" font-family="Outfit" font-size="9">Doubles Down</text>
+          <text text-anchor="middle" dy="-2" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="13">Apex</text>
+          <text text-anchor="middle" dy="14" fill="#10B981" font-family="Inter" font-size="9">Doubles Down</text>
         </g>
       </svg>
     </div>

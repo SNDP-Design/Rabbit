@@ -39,7 +39,7 @@ export function renderCampaignsView(container, state, onLaunchDomain) {
           <i data-lucide="search" style="width: 14px; height: 14px;"></i> Koda Agent Studying Target Domain & Competitor Matrix...
         </div>
         <div style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">
-          <strong>Target Domain:</strong> <span style="font-family: var(--font-mono); color: var(--emerald);">larksilk.com</span> — Wholesale silk flowers and greenery for hotels, restaurants & florists (45+ years).
+          <strong>Target Domain:</strong> <span style="font-family: var(--font-sans); color: var(--emerald);">larksilk.com</span> — Wholesale silk flowers and greenery for hotels, restaurants & florists (45+ years).
         </div>
         <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.75rem;">
           <span style="background: rgba(255, 255, 255, 0.05); padding: 4px 10px; border-radius: var(--radius-full); color: var(--text-muted);">
@@ -77,7 +77,7 @@ export function renderCampaignsView(container, state, onLaunchDomain) {
           ${ICP_SEGMENTS.map(seg => `
             <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.04); ${seg.status === 'Paused' ? 'opacity: 0.4;' : ''}">
               <td style="padding: 12px; font-weight: 700; color: #FFF;">${seg.name}</td>
-              <td style="padding: 12px; font-family: var(--font-mono); color: var(--cyan); font-weight: 700;">${seg.fitScore}</td>
+              <td style="padding: 12px; font-family: var(--font-sans); color: var(--cyan); font-weight: 700;">${seg.fitScore}</td>
               <td style="padding: 12px;">
                 <span class="intent-badge ${seg.status === 'Scaling' ? 'intent-high' : seg.status === 'Working' ? 'intent-med' : ''}" style="${seg.status === 'Paused' ? 'background: rgba(255, 255, 255, 0.1); color: var(--text-dim); border: none;' : ''}">
                   ${seg.status}
@@ -104,7 +104,7 @@ export function renderCampaignsView(container, state, onLaunchDomain) {
           <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Koda Agent Completed Instant Crawl of ${val}!
         </div>
         <div style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 8px;">
-          <strong>Target Domain:</strong> <span style="font-family: var(--font-mono); color: var(--cyan);">${val}</span> — Autopilot sequence launched across 6 Explee autonomous agents.
+          <strong>Target Domain:</strong> <span style="font-family: var(--font-sans); color: var(--cyan);">${val}</span> — Autopilot sequence launched across 6 Explee autonomous agents.
         </div>
         <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.75rem;">
           <span style="background: rgba(16, 185, 129, 0.15); color: var(--emerald); padding: 4px 10px; border-radius: var(--radius-full);">

@@ -92,11 +92,11 @@ export function renderLeadDrawer(drawerContainer, lead, onClose) {
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
       <div style="background: rgba(255, 255, 255, 0.03); padding: 10px; border-radius: var(--radius-md);">
         <div style="font-size: 0.7rem; color: var(--text-dim);">Verified Email</div>
-        <div style="font-size: 0.8rem; color: #FFF; font-family: var(--font-mono);">${lead.email || 'N/A'}</div>
+        <div style="font-size: 0.8rem; color: #FFF; font-family: var(--font-sans);">${lead.email || 'N/A'}</div>
       </div>
       <div style="background: rgba(255, 255, 255, 0.03); padding: 10px; border-radius: var(--radius-md);">
         <div style="font-size: 0.7rem; color: var(--text-dim);">Verified Phone</div>
-        <div style="font-size: 0.8rem; color: #FFF; font-family: var(--font-mono);">${lead.phone || 'N/A'}</div>
+        <div style="font-size: 0.8rem; color: #FFF; font-family: var(--font-sans);">${lead.phone || 'N/A'}</div>
       </div>
     </div>
 
