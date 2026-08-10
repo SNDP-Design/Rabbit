@@ -539,69 +539,31 @@ const state = {
   connectedDomain: '',
   activeView: 'command-center',
   agents: [
-    { id:'koda',  name:'Koda',  role:'Domain & Offer Intelligence',     avatar:'🔍', color:'#3ECF8E', efficiency:'99.8%', actionsToday:1840,
-      currentTask:'Analyzing larksilk.com — Wholesale silk flowers & greenery for hotels & florists (45+ yrs)...',
-      thoughtStream:'Competitors: afloral.com, nearlynatural.com. Value prop extracted: "Bulk silk boxes save 60% vs fresh flowers under venue lights".' },
-    { id:'atlas', name:'Atlas', role:'ICP & Fit Score Segmenter',       avatar:'📊', color:'#6366F1', efficiency:'99.2%', actionsToday:1290,
-      currentTask:'Calculating ICP fit scores across 5 verticals...',
-      thoughtStream:'Event Designers 92% fit ($1.69/lead), Wedding Studios 88%, Country Clubs 79%. Paused Property Management.' },
-    { id:'nova',  name:'Nova',  role:'536M+ Contact Sourcing',          avatar:'🎯', color:'#0EA5E9', efficiency:'98.9%', actionsToday:940,
-      currentTask:'Querying GPU cluster covering 536M+ verified profiles...',
-      thoughtStream:'Discovered Rachel Whitfield (Sweet Pea Events), Dana Okafor (Tupelo Honey). Email verification: 100%.' },
-    { id:'pulse', name:'Pulse', role:'1:1 Hyper-Personalized Emailer',  avatar:'✍️', color:'#A855F7', efficiency:'97.9%', actionsToday:710,
-      currentTask:'Synthesizing context-aware email for Dana Okafor...',
-      thoughtStream:'Drafted note referencing Tupelo Honey full-scale installs & UV-resistant silk specs.' },
-    { id:'echo',  name:'Echo',  role:'Objection AI & Auto-Booker',      avatar:'💬', color:'#F59E0B', efficiency:'96.5%', actionsToday:410,
-      currentTask:'Analyzing inbound: "How do these hold up under venue lighting?"...',
-      thoughtStream:'Replied with flame-retardant UV silk specs. Auto-dispatched calendar invite for Tuesday 2:00 PM.' },
-    { id:'apex',  name:'Apex',  role:'Pipeline Scaler & Self-Optimizer', avatar:'🧠', color:'#3ECF8E', efficiency:'99.6%', actionsToday:240,
-      currentTask:'Evaluating vertical ROI — Event Designers $1.69 vs Houses of Worship $6.33...',
-      thoughtStream:'Re-allocating 40% budget to Event Designers. Pausing low-performing segments.' }
+    { id:'koda',  name:'Koda',  role:'Domain & Offer Intelligence',     avatar:'🔍', color:'#3ECF8E', efficiency:'100%', actionsToday:0,
+      currentTask:'Awaiting product domain URL...',
+      thoughtStream:'Ready to crawl website domain & synthesize core product offering.' },
+    { id:'atlas', name:'Atlas', role:'ICP & Fit Score Segmenter',       avatar:'📊', color:'#6366F1', efficiency:'100%', actionsToday:0,
+      currentTask:'Awaiting product domain input...',
+      thoughtStream:'Ready to calculate ICP fit scores & market vertical rankings.' },
+    { id:'nova',  name:'Nova',  role:'536M+ Contact Sourcing',          avatar:'🎯', color:'#0EA5E9', efficiency:'100%', actionsToday:0,
+      currentTask:'Awaiting product domain input...',
+      thoughtStream:'Ready to query 536M+ B2B database for verified decision makers.' },
+    { id:'pulse', name:'Pulse', role:'1:1 Hyper-Personalized Emailer',  avatar:'✍️', color:'#A855F7', efficiency:'100%', actionsToday:0,
+      currentTask:'Awaiting product domain input...',
+      thoughtStream:'Ready to generate context-aware 1:1 personalized outreach copy.' },
+    { id:'echo',  name:'Echo',  role:'Objection AI & Auto-Booker',      avatar:'💬', color:'#F59E0B', efficiency:'100%', actionsToday:0,
+      currentTask:'Awaiting product domain input...',
+      thoughtStream:'Ready to analyze inbound replies and auto-dispatch calendar invites.' },
+    { id:'apex',  name:'Apex',  role:'Pipeline Scaler & Self-Optimizer', avatar:'🧠', color:'#3ECF8E', efficiency:'100%', actionsToday:0,
+      currentTask:'Awaiting product domain input...',
+      thoughtStream:'Ready to optimize channel ROI & reallocate campaign budget.' }
   ],
-  leads: [
-    { id:'l1', name:'Dana Okafor',     title:'Lead Designer',          company:'Tupelo Honey Flower', stage:'meeting_booked', intentScore:94,
-      email:'dana@tupelohoneyflower.com', phone:'+1 (415) 302-8819',
-      buyingSignals:['Full-scale event installs','High monthly floral spend'],
-      lastActivity:'Demo booked: Tue 14:00 EST by Echo AI',
-      history:[{time:'5 min ago',text:'Echo auto-booked Tuesday 2pm demo after resolving venue lighting objection.'},{time:'35 min ago',text:'Dana replied: "Can you do Tuesday 2pm?"'},{time:'1 day ago',text:'Pulse sent 1:1 personalized email referencing Tupelo Honey installs.'}] },
-    { id:'l2', name:'Rachel Whitfield', title:'Owner & Creative Director', company:'Sweet Pea Events', stage:'engaged', intentScore:91,
-      email:'rachel@sweetpeaevents.com', phone:'+1 (212) 890-4412',
-      buyingSignals:['Scaling luxury weddings','Evaluating bulk suppliers'],
-      lastActivity:'Replied: "Can you send a sample box to our NYC studio?"',
-      history:[{time:'15 min ago',text:'Echo drafted sample box dispatch confirmation & Calendly link.'},{time:'2 hr ago',text:'Rachel opened email (3rd open).'}] },
-    { id:'l3', name:'Mia Castellanos', title:'Founder', company:'The Bloom Lab', stage:'contacted', intentScore:88,
-      email:'mia@thebloomlab.co', phone:'+1 (312) 667-9021',
-      buyingSignals:['Hiring 2 Floral Stylists','Expanded studio location'],
-      lastActivity:'Pulse dispatched personalized email mentioning NJ box shipping',
-      history:[{time:'4 hr ago',text:'Nova enriched verified work email & phone number.'}] }
-  ],
-  sequences: [
-    { id:'s1', stepNumber:1, channel:'Email', delay:'Day 1 — Immediate', subject:'Larksilk x {{company}}',
-      body:'Hi {{first_name}},\n\nSaw {{company}} designs full-scale event installs. At that pace, fresh florals get expensive fast — and wilt under venue lights. Larksilk ships premium silk by the box from NJ, so one buy carries across events.\n\nWant a sample box to compare against your last fresh order?\n\nBest,\nRabbit Autonomous Agent',
-      metrics:{ sent:412, opened:'74.2%', replied:'16.5%' } },
-    { id:'s2', stepNumber:2, channel:'LinkedIn', delay:'Day 4 — No Reply',
-      body:'Hi {{first_name}}, following up on my email about Larksilk\'s silk floral boxes — perfect for {{company}}\'s scale of events. Would love to send a free sample. Thoughts?',
-      metrics:{ sent:380, accepted:'38.2%', replied:'12.1%' } }
-  ],
-  inboxMessages: [
-    { id:'m1', leadName:'Dana Okafor', company:'Tupelo Honey Flower', sentimentKey:'BOOKING',
-      leadMessage:'How do these hold up under venue lighting? Also, can you do Tuesday 2pm for a quick call?',
-      aiAnalysis:'High buying intent detected. Prospect asked about UV durability and proposed a specific meeting time slot — Echo should auto-book immediately.',
-      aiProposedReply:'Hi Dana,\n\nOur silk florals are UV and flame-retardant treated, so they hold crisp under intense venue spotlights — no fading, no wilting.\n\nTuesday 2pm EST works perfectly. Calendar invite sent to dana@tupelohoneyflower.com. ✓\n\nLooking forward to connecting!',
-      status:'AI Replied & Calendar Invite Sent' }
-  ],
-  optimizationLogs: [
-    { id:'o1', time:'10 min ago', type:'Vertical Scaling',  description:'Event Designers scaled to full budget ($1.69/lead, 92% fit). Paused low-converting Property Management ($5.80/lead).' },
-    { id:'o2', time:'1 hr ago',   type:'Domain Warming',    description:'100% inbox delivery rate across 412 emails via pre-warmed domain infrastructure.' },
-    { id:'o3', time:'3 hr ago',   type:'Copy A/B Test Win', description:'Subject "Larksilk x {{company}}" beat control by +22% open rate. Auto-rolled out to full list.' }
-  ],
+  leads: [],
+  sequences: [],
+  inboxMessages: [],
+  optimizationLogs: [],
   logs: [
-    { id:'i1', time:'Just now',   agentName:'Koda',  color:'#3ECF8E', text:'Rabbit Autonomous Engine initialized. 6 Explee AI agents online.' },
-    { id:'i2', time:'1 min ago',  agentName:'Nova',  color:'#0EA5E9', text:'GPU cluster queried: 536M+ decision-maker profiles indexed across 105M+ companies.' },
-    { id:'i3', time:'3 min ago',  agentName:'Atlas', color:'#6366F1', text:'ICP fit score 92% computed for Event Designers vertical. Projected CAC: $1.69.' },
-    { id:'i4', time:'5 min ago',  agentName:'Pulse', color:'#A855F7', text:'12 hyper-personalized emails generated for Event Designer ICP segment.' },
-    { id:'i5', time:'8 min ago',  agentName:'Echo',  color:'#F59E0B', text:'Demo auto-booked for Dana Okafor — Tuesday 14:00 EST confirmed.' },
-    { id:'i6', time:'12 min ago', agentName:'Apex',  color:'#3ECF8E', text:'Budget reallocated: 40% to Event Designers. Houses of Worship paused.' }
+    { id:'i1', time:'Just now', agentName:'Koda', color:'#3ECF8E', text:'Rabbit Autonomous Engine ready. Enter your product website URL above to deploy all 6 agents.' }
   ]
 };
 
@@ -1179,7 +1141,7 @@ const SIM_COS   = ['LogSure Floral','PlotWeaver Events','Radar Decor','Passpoint
 let simIdx = 0, simTimer = null;
 
 function tick() {
-  if (!state.engineRunning) return;
+  if (!state.engineRunning || !state.connectedDomain) return;
   const sc = SCENARIOS[simIdx % SCENARIOS.length];
   simIdx++;
   const a = state.agents.find(ag => ag.id === sc.id);
@@ -1253,48 +1215,112 @@ function applyConnectedDomain(domain) {
 
   const brandName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
 
+  // Update Agents
   const koda = state.agents.find(a => a.id === 'koda');
   if (koda) {
     koda.currentTask = `Analyzing ${domain} — studying product features & value proposition...`;
-    koda.thoughtStream = `Crawled ${domain} homepage. Extracted value proposition for ${brandName}. Competitor landscape mapped.`;
+    koda.thoughtStream = `Crawled ${domain} homepage. Extracted core value proposition for ${brandName}. Mapped competitor landscape.`;
+    koda.actionsToday += 120;
   }
 
   const atlas = state.agents.find(a => a.id === 'atlas');
   if (atlas) {
-    atlas.currentTask = `Calculating ICP fit scores for ${brandName} offerings...`;
-    atlas.thoughtStream = `Identified top conversion opportunities for ${brandName} ($1.69/lead). Paused low-converting verticals.`;
+    atlas.currentTask = `Calculating ICP fit scores for ${brandName} market verticals...`;
+    atlas.thoughtStream = `Identified top target vertical: Decision Makers & Founders (94% fit, $1.69/lead).`;
+    atlas.actionsToday += 85;
   }
 
   const nova = state.agents.find(a => a.id === 'nova');
   if (nova) {
-    nova.currentTask = `Querying 536M+ profiles for decision makers interested in ${brandName}...`;
-    nova.thoughtStream = `Sourced verified CEO/Founder contacts matching ${brandName}'s ideal customer profile.`;
+    nova.currentTask = `Querying 536M+ profiles for buyers interested in ${brandName}...`;
+    nova.thoughtStream = `Sourced verified CEO & Founder contacts matching ${brandName}'s ideal customer profile.`;
+    nova.actionsToday += 210;
   }
 
   const pulse = state.agents.find(a => a.id === 'pulse');
   if (pulse) {
-    pulse.currentTask = `Synthesizing 1:1 personalized emails tailored to ${brandName}'s offer...`;
-    pulse.thoughtStream = `Drafted custom outreach copy referencing ${brandName}'s key differentiation features.`;
+    pulse.currentTask = `Synthesizing 1:1 personalized outreach for ${brandName}...`;
+    pulse.thoughtStream = `Drafted custom outreach emails highlighting ${brandName}'s differentiation features.`;
+    pulse.actionsToday += 65;
   }
 
   const echo = state.agents.find(a => a.id === 'echo');
   if (echo) {
-    echo.currentTask = `Objection & Booking AI trained on ${brandName} knowledge base...`;
-    echo.thoughtStream = `Armed with ${brandName} product specs & auto-booking calendar integration.`;
+    echo.currentTask = `Objection & Booking AI armed with ${brandName} knowledge base...`;
+    echo.thoughtStream = `Trained on ${brandName} specs & calendar invite integration ready.`;
+    echo.actionsToday += 30;
   }
 
   const apex = state.agents.find(a => a.id === 'apex');
   if (apex) {
     apex.currentTask = `Self-optimization loop active for ${brandName} campaigns...`;
-    apex.thoughtStream = `Re-allocating outreach budget to top-performing verticals for ${brandName}.`;
+    apex.thoughtStream = `Allocating outreach budget to top-performing verticals for ${brandName}.`;
+    apex.actionsToday += 15;
   }
 
-  if (state.sequences[0]) {
-    state.sequences[0].subject = `${brandName} x {{company}}`;
-    state.sequences[0].body = `Hi {{first_name}},\n\nSaw {{company}} is scaling rapidly. We built ${brandName} (${domain}) to help teams like yours streamline operations and boost conversion rates without high manual overhead.\n\nWould you be open to a quick 10-min demo this week?\n\nBest,\nRabbit Autonomous Agent`;
-  }
+  // Populate dynamic product leads
+  state.leads = [
+    {
+      id: 'l1', name: 'Alex Rivera', title: 'VP of Growth', company: 'Apex Digital Solutions', stage: 'engaged', intentScore: 92,
+      email: `alex@apexdigital.com`, phone: '+1 (415) 890-3321',
+      buyingSignals: [`Evaluating ${brandName}`, 'Active hiring spree'],
+      lastActivity: `Replied: "Interested in learning more about ${brandName}"`,
+      history: [
+        { time: '10 min ago', text: `Echo analyzed reply regarding ${brandName} and drafted demo booking link.` },
+        { time: '2 hr ago', text: `Pulse sent 1:1 personalized outreach referencing ${brandName}.` }
+      ]
+    },
+    {
+      id: 'l2', name: 'Sarah Jenkins', title: 'Founder & CEO', company: 'Horizon Tech', stage: 'contacted', intentScore: 86,
+      email: `sarah@horizontech.io`, phone: '+1 (212) 445-9980',
+      buyingSignals: [`Growth stage company`, `Looking for automation tools`],
+      lastActivity: `Pulse dispatched personal email for ${brandName}`,
+      history: [
+        { time: '1 hr ago', text: `Nova enriched verified work email & phone for Sarah.` }
+      ]
+    }
+  ];
 
-  addLog('koda', 'Koda', '#3ECF8E', `CONNECTED NEW PRODUCT DOMAIN: ${domain}. Koda completed instant crawl and re-configured all 6 agents for ${brandName}.`);
+  // Populate dynamic product sequence
+  state.sequences = [
+    {
+      id: 's1', stepNumber: 1, channel: 'Email', delay: 'Day 1 — Immediate', subject: `${brandName} x {{company}}`,
+      body: `Hi {{first_name}},
+
+Saw {{company}} is scaling operations. We built ${brandName} (${domain}) to help teams like yours streamline workflows and boost conversion rates without high manual overhead.
+
+Would you be open to a quick 10-min demo this week?
+
+Best,
+Rabbit Autonomous Agent`,
+      metrics: { sent: 142, opened: '71.4%', replied: '18.2%' }
+    }
+  ];
+
+  // Populate dynamic inbox message
+  state.inboxMessages = [
+    {
+      id: 'm1', leadName: 'Alex Rivera', company: 'Apex Digital Solutions', sentimentKey: 'INTERESTED',
+      leadMessage: `Hi there, saw your note about ${brandName}. How does onboarding work, and can we set up a quick 15-min call on Thursday?`,
+      aiAnalysis: `High intent buying signal. Prospect asked about ${brandName} onboarding and proposed Thursday meeting time.`,
+      aiProposedReply: `Hi Alex,
+
+Onboarding for ${brandName} takes under 60 seconds — simply input your website domain and our 6 AI agents handle the rest.
+
+Thursday works great for a 15-min call! Calendar invite sent to alex@apexdigital.com. ✓
+
+Looking forward to speaking!`,
+      status: 'AI Replied & Calendar Invite Sent'
+    }
+  ];
+
+  // Populate dynamic optimization logs
+  state.optimizationLogs = [
+    { id: 'o1', time: 'Just now', type: 'Domain Intelligence', description: `Successfully synthesized product identity and competitor landscape for ${domain}.` },
+    { id: 'o2', time: 'Just now', type: 'ICP Segmentation', description: `Founders & Growth VP vertical identified as 94% fit score for ${brandName}.` }
+  ];
+
+  addLog('koda', 'Koda', '#3ECF8E', `DEPLOYED AI WORKFORCE FOR: ${domain}. Koda completed website crawl and configured all 6 agents for ${brandName}.`);
   renderSidebar();
   renderView();
 }
