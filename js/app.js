@@ -1,404 +1,50 @@
-/* ==========================================================================
-   Rabbit - Main Application Entry Point
-   ========================================================================== */
-
-import { initialAgents, initialCampaigns, initialLeads, initialSequences, initialInboxMessages, initialOptimizationLogs } from './mockData.js';
-import { SimulationEngine } from './simulationEngine.js';
-
-import { renderHeader } from './components/header.js';
-import { renderSidebar } from './components/sidebar.js';
-import { renderWorkforceGrid } from './components/workforceGrid.js';
-import { renderWorkflowGraph } from './components/workflowGraph.js';
-import { renderCampaignsView } from './components/campaignsView.js';
-import { renderPipelineView, renderLeadDrawer } from './components/pipelineView.js';
-import { renderSequenceView } from './components/sequenceView.js';
-import { renderInboxView } from './components/inboxView.js';
-import { renderSelfOptimizationView } from './components/selfOptimizationView.js';
-import { renderCopilotModal } from './components/copilotModal.js';
-
-class AutoGTMApp {
-  constructor() {
-    this.state = {
-      engineRunning: true,
-      activeView: 'command-center',
-      agents: initialAgents,
-      campaigns: initialCampaigns,
-      leads: initialLeads,
-      sequences: initialSequences,
-      inboxMessages: initialInboxMessages,
-      optimizationLogs: initialOptimizationLogs,
-      logs: [
-        { id: 'log-1', time: 'Just now', agentId: 'koda', agentName: 'Koda', color: '#06B6D4', text: 'Rabbit Autonomous Engine booted successfully. 6 Explee AI agents online.' },
-        { id: 'log-2', time: '1 min ago', agentId: 'nova', agentName: 'Nova', color: '#EC4899', text: 'Queried GPU cluster: indexed 536M+ decision maker profiles.' }
-      ],
-      selectedLead: null
-    };
-
-    // DOM containers
-    this.headerContainer = document.getElementById('header-container');
-    this.sidebarContainer = document.getElementById('sidebar-container');
-    this.leadDrawerBackdrop = document.getElementById('lead-drawer-backdrop');
-    this.leadDrawer = document.getElementById('lead-drawer');
-    this.copilotBackdrop = document.getElementById('copilot-modal-backdrop');
-    this.copilotModal = document.getElementById('copilot-modal');
-
-    // Initialize simulation engine
-    this.engine = new SimulationEngine(
-      this.state,
-      (updatedState) => this.onStateUpdated(updatedState),
-      (newLog) => this.onNewLogAdded(newLog)
-    );
-
-    this.init();
-  }
-
-  init() {
-    this.renderLayout();
-    this.renderCurrentView();
-    this.setupGlobalEventListeners();
-    this.engine.start();
-
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  setupGlobalEventListeners() {
-    // Backdrop click handlers to dismiss modals/drawers
-    if (this.leadDrawerBackdrop) {
-      this.leadDrawerBackdrop.addEventListener('click', (e) => {
-        if (e.target === this.leadDrawerBackdrop) {
-          this.closeLeadDrawer();
-        }
-      });
-    }
-
-    if (this.copilotBackdrop) {
-      this.copilotBackdrop.addEventListener('click', (e) => {
-        if (e.target === this.copilotBackdrop) {
-          this.closeCopilot();
-        }
-      });
-    }
-
-    // Keyboard ESC key handler
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        this.closeLeadDrawer();
-        this.closeCopilot();
-      }
-    });
-  }
-
-  renderLayout() {
-    renderHeader(this.headerContainer, this.state, {
-      toggleEngine: () => this.toggleEngine(),
-      openCopilot: () => this.openCopilot()
-    });
-
-    renderSidebar(this.sidebarContainer, this.state.activeView, this.state, (viewId) => {
-      this.switchView(viewId);
-    });
-  }
-
-  switchView(viewId) {
-    this.state.activeView = viewId;
-    
-    // Hide all view panels
-    document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
-
-    // Show target view panel
-    const targetPanel = document.getElementById(`view-${viewId}`);
-    if (targetPanel) targetPanel.classList.add('active');
-
-    this.renderSidebar();
-    this.renderCurrentView();
-  }
-
-  renderSidebar() {
-    renderSidebar(this.sidebarContainer, this.state.activeView, this.state, (viewId) => {
-      this.switchView(viewId);
-    });
-  }
-
-  renderCurrentView() {
-    switch (this.state.activeView) {
-      case 'command-center':
-        this.renderCommandCenter();
-        break;
-      case 'campaigns':
-        renderCampaignsView(document.getElementById('view-campaigns'), this.state, (domain) => this.handleLaunchDomain(domain));
-        break;
-      case 'pipeline':
-        renderPipelineView(document.getElementById('view-pipeline'), this.state, (lead) => this.openLeadDrawer(lead));
-        break;
-      case 'sequences':
-        renderSequenceView(document.getElementById('view-sequences'), this.state, () => this.handleOptimizeSequences());
-        break;
-      case 'inbox':
-        renderInboxView(document.getElementById('view-inbox'), this.state, (msgId) => this.handleSendReply(msgId));
-        break;
-      case 'optimization':
-        renderSelfOptimizationView(document.getElementById('view-optimization'), this.state);
-        break;
-    }
-  }
-
-  renderCommandCenter() {
-    const container = document.getElementById('view-command-center');
-    if (!container) return;
-
-    container.innerHTML = `
-      <!-- Explee Stat Banner -->
-      <div class="grid-cols-4" style="margin-bottom: 24px;">
-        <div class="stat-card">
-          <div class="stat-icon"><i data-lucide="bot"></i></div>
-          <div>
-            <div class="stat-value">6</div>
-            <div class="stat-label">Autonomous Agents</div>
-            <div class="stat-trend"><i data-lucide="check-circle"></i> 100% Autopilot</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(6, 182, 212, 0.15); color: var(--cyan); border-color: rgba(6, 182, 212, 0.25);">
-            <i data-lucide="database"></i>
-          </div>
-          <div>
-            <div class="stat-value">536M+</div>
-            <div class="stat-label">People Profiles Covered</div>
-            <div class="stat-trend"><i data-lucide="shield-check"></i> 105M+ Companies</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: var(--purple); border-color: rgba(168, 85, 247, 0.25);">
-            <i data-lucide="flame"></i>
-          </div>
-          <div>
-            <div class="stat-value">${this.state.leads.length}</div>
-            <div class="stat-label">Active Prospects</div>
-            <div class="stat-trend"><i data-lucide="arrow-up-right"></i> 74.2% Open Rate</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--emerald); border-color: rgba(16, 185, 129, 0.25);">
-            <i data-lucide="dollar-sign"></i>
-          </div>
-          <div>
-            <div class="stat-value">$1.69</div>
-            <div class="stat-label">Cost / Warm Lead</div>
-            <div class="stat-trend"><i data-lucide="arrow-down-right"></i> $0.03 per email</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Agent Workforce Grid -->
-      <div style="margin-bottom: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-          <h2 style="font-size: 1.2rem; font-weight: 800; color: #FFF;">Autonomous AI Workforce Matrix</h2>
-          <span style="font-size: 0.75rem; color: var(--text-dim);">Live Execution Telemetry</span>
-        </div>
-        <div id="workforce-grid-container"></div>
-      </div>
-
-      <!-- Workflow Visualizer & Live Stream -->
-      <div class="grid-cols-2" style="margin-bottom: 24px;">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i data-lucide="share-2" style="color: var(--cyan);"></i>
-              <span>Agent Data Mesh & Workflow Signal Path</span>
-            </div>
-          </div>
-          <div id="workflow-graph-container"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <i data-lucide="terminal" style="color: var(--emerald);"></i>
-              <span>Live Agent Thought & Activity Stream</span>
-            </div>
-          </div>
-          <div id="log-stream-container" class="log-stream">
-            ${this.state.logs.map(log => `
-              <div class="log-entry" style="--log-color: ${log.color}">
-                <span class="log-time">[${log.time}]</span>
-                <span class="log-agent">${log.agentName}:</span>
-                <span class="log-text">${log.text}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-
-    renderWorkforceGrid(document.getElementById('workforce-grid-container'), this.state.agents);
-    renderWorkflowGraph(document.getElementById('workflow-graph-container'), this.state.agents);
-
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  toggleEngine() {
-    this.state.engineRunning = !this.state.engineRunning;
-    if (this.state.engineRunning) {
-      this.engine.start();
-    } else {
-      this.engine.stop();
-    }
-    renderHeader(this.headerContainer, this.state, {
-      toggleEngine: () => this.toggleEngine(),
-      openCopilot: () => this.openCopilot()
-    });
-  }
-
-  openCopilot() {
-    this.copilotBackdrop.classList.remove('hidden');
-    renderCopilotModal(
-      this.copilotModal,
-      this.state,
-      (promptText) => this.handleCopilotDirective(promptText),
-      () => this.closeCopilot()
-    );
-  }
-
-  closeCopilot() {
-    if (this.copilotBackdrop) {
-      this.copilotBackdrop.classList.add('hidden');
-    }
-  }
-
-  handleCopilotDirective(promptText) {
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    this.state.logs.unshift({
-      id: 'log-' + Date.now(),
-      time: timestamp,
-      agentId: 'apex',
-      agentName: 'Apex',
-      color: '#10B981',
-      text: `DIRECTIVE RECEIVED: "${promptText}". Updating campaign strategies across all 6 agents.`
-    });
-
-    const apex = this.state.agents.find(a => a.id === 'apex');
-    if (apex) {
-      apex.thoughtStream = `Re-calibrating targeting model & sequence parameters per user directive: "${promptText.substring(0, 40)}..."`;
-    }
-
-    this.onStateUpdated(this.state);
-  }
-
-  handleLaunchDomain(domain) {
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    this.state.logs.unshift({
-      id: 'log-' + Date.now(),
-      time: timestamp,
-      agentId: 'koda',
-      agentName: 'Koda',
-      color: '#06B6D4',
-      text: `AUTOPILOT LAUNCHED for ${domain}. Koda studying domain offering & competitor landscape.`
-    });
-
-    const koda = this.state.agents.find(a => a.id === 'koda');
-    if (koda) {
-      koda.currentTask = `Analyzing domain ${domain}...`;
-      koda.thoughtStream = `Studying domain features and extracting value proposition for ${domain}.`;
-    }
-
-    this.onStateUpdated(this.state);
-  }
-
-  handleOptimizeSequences() {
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    this.state.logs.unshift({
-      id: 'log-' + Date.now(),
-      time: timestamp,
-      agentId: 'pulse',
-      agentName: 'Pulse',
-      color: '#A855F7',
-      text: `Pulse Agent auto-optimized dynamic variables across all outreach steps.`
-    });
-
-    const pulse = this.state.agents.find(a => a.id === 'pulse');
-    if (pulse) {
-      pulse.thoughtStream = `Re-synthesized email & message copy for 1:1 personalization.`;
-    }
-
-    this.onStateUpdated(this.state);
-    if (this.state.activeView === 'sequences') {
-      renderSequenceView(document.getElementById('view-sequences'), this.state, () => this.handleOptimizeSequences());
-    }
-  }
-
-  openLeadDrawer(lead) {
-    this.state.selectedLead = lead;
-    this.leadDrawerBackdrop.classList.remove('hidden');
-    renderLeadDrawer(this.leadDrawer, lead, () => {
-      this.closeLeadDrawer();
-    });
-  }
-
-  closeLeadDrawer() {
-    if (this.leadDrawerBackdrop) {
-      this.leadDrawerBackdrop.classList.add('hidden');
-    }
-  }
-
-  handleSendReply(msgId) {
-    const msg = this.state.inboxMessages.find(m => m.id === msgId);
-    if (msg) {
-      msg.status = 'Sent & Delivered';
-      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      this.state.logs.unshift({
-        id: 'log-' + Date.now(),
-        time: timestamp,
-        agentId: 'echo',
-        agentName: 'Echo',
-        color: '#F59E0B',
-        text: `Dispatched approved objection counter-reply to ${msg.leadName} (${msg.company}).`
-      });
-      this.renderCurrentView();
-    }
-  }
-
-  onStateUpdated(state) {
-    this.renderSidebar();
-
-    if (this.state.activeView === 'command-center') {
-      const gridContainer = document.getElementById('workforce-grid-container');
-      if (gridContainer) renderWorkforceGrid(gridContainer, state.agents);
-    } else if (this.state.activeView === 'pipeline') {
-      renderPipelineView(document.getElementById('view-pipeline'), this.state, (lead) => this.openLeadDrawer(lead));
-    }
-  }
-
-  onNewLogAdded(newLog) {
-    const streamContainer = document.getElementById('log-stream-container');
-    if (streamContainer) {
-      const logElement = document.createElement('div');
-      logElement.className = 'log-entry';
-      logElement.style.setProperty('--log-color', newLog.color);
-      logElement.innerHTML = `
-        <span class="log-time">[${newLog.time}]</span>
-        <span class="log-agent">${newLog.agentName}:</span>
-        <span class="log-text">${newLog.text}</span>
-      `;
-      streamContainer.insertBefore(logElement, streamContainer.firstChild);
-      if (streamContainer.children.length > 50) {
-        streamContainer.removeChild(streamContainer.lastChild);
-      }
-    }
-  }
-}
-
-// Safe initialization supporting ES module deferral & instant load
-function initApp() {
-  if (!window.app) {
-    window.app = new AutoGTMApp();
-  }
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
-}
+const STORE = 'rabbit-gtm-workspace-v1';
+const stages = [
+  ['Scout','Offer & market research'],['Atlas','ICP hypothesis'],['Signal','Account discovery brief'],['Writer','Messaging & assets'],['Operator','Campaign plan'],['Optimizer','Learning loop']
+];
+const defaults = {activeView:'overview',mission:null,run:{status:'idle',stage:0,completed:[],startedAt:null},outputs:[],approvals:[],audit:[],settings:{},demo:false};
+let state = load(); let timer; let lastFocus;
+const $ = s => document.querySelector(s);
+function load(){try{const saved=JSON.parse(localStorage.getItem(STORE));return {...defaults,...saved,run:{...defaults.run,...saved.run}}}catch{return structuredClone(defaults)}}
+function save(){localStorage.setItem(STORE,JSON.stringify(state));}
+function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function now(){return new Date().toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}
+function addAudit(text){state.audit.unshift({text,time:now()});state.audit=state.audit.slice(0,30);}
+function business(){return state.mission||{website:'your website',offer:'your offer',market:'your chosen market',goal:'your GTM goal'};}
+function productName(){const b=business(); try{return new URL(b.website.includes('://')?b.website:'https://'+b.website).hostname.replace('www.','').split('.')[0].replace(/[-_]/g,' ').replace(/\b\w/g,x=>x.toUpperCase())}catch{return 'Your product'}}
+function outputFor(index){const b=business(), n=productName(); const copy=[
+  `Strategy brief\n\n${n} appears to sell: ${b.offer}.\nPrimary market: ${b.market}.\nGoal: ${b.goal}.\n\nWorking proposition: lead with the concrete outcome ${n} enables, validate the buyer problem in discovery, and keep claims grounded in customer evidence.\n\nResearch tasks (not completed web research):\n• Review three adjacent alternatives named by prospective buyers.\n• Collect five customer phrases from calls, reviews, or support.\n• Confirm the shortest credible path to the stated goal.`,
+  `ICP hypotheses\n\n1. Teams in ${b.market} with a visible need connected to “${b.goal}”.\n2. A practical champion who owns the current process or metric.\n3. An economic buyer who can validate the problem and expected outcome.\n\nQualify by: current workflow, urgency, team size, existing workaround, and measurable downside. These are hypotheses to test—not verified customer data.`,
+  `Account discovery criteria\n\nPrioritize organizations in ${b.market} that publicly describe the problem ${n} addresses, are hiring around the workflow, or publish a related initiative.\n\nCreate research tasks for each candidate: company context, relevant public signal, likely team, and source link.\n\nNo contacts have been invented or looked up. Connect a compliant data source later, or research public company pages manually.`,
+  `Messaging starter set\n\nCore message: ${n} helps ${b.market} move toward ${b.goal} by making ${b.offer} easier to evaluate and act on.\n\nEmail draft (needs approval before sending):\nSubject: A question about ${b.goal}\n\nHi [name],\n\nI’m reaching out because teams in ${b.market} often run into [specific observed problem]. ${n} is built for ${b.offer}. Would it be useful to compare notes on whether this could help your team move toward ${b.goal}?\n\nBest,\n[Sender]\n\nAdapt this only with truthful, public context.`,
+  `Campaign plan\n\nWeek 1: validate the ICP hypotheses in 5–10 conversations and log objections.\nWeek 2: publish one helpful asset explaining the problem and test the message with a small, approved list.\nWeek 3: review replies and refine positioning.\n\nChannels are drafts only. Do not send email, publish content, book meetings, or change spend without a recorded approval.`,
+  `Learning loop\n\nMeasure only observed activity after external tools are connected: qualified conversations, message replies, asset engagement, and sales feedback.\n\nNext best action: select one ICP hypothesis, interview five relevant people, and update the message using their exact language. No performance data exists in this local workspace yet.`
+]; return copy[index];}
+function makeOutput(index){const [agent,title]=stages[index];return {id:`${Date.now()}-${index}`,agent,title,body:outputFor(index),createdAt:now()};}
+function addApprovals(){const n=productName();state.approvals=[
+ {id:'send-email',type:'Send email',title:`Approve the ${n} outreach draft`,detail:'Draft only. No recipient list or email connection is present.',status:'needs approval'},
+ {id:'publish-asset',type:'Publish content',title:'Approve a messaging asset for publishing',detail:'A draft exists locally. Publishing remains disabled until you connect a tool.',status:'needs approval'},
+ {id:'book-calendar',type:'Book calendar',title:'Approve calendar booking workflow',detail:'No meeting will be booked in static mode.',status:'needs approval'},
+ {id:'change-budget',type:'Change budget',title:'Approve any budget change',detail:'No budget has been set or changed.',status:'needs approval'}];}
+function startRun(){if(!state.mission){state.activeView='mission';render();return}clearTimeout(timer);state.activeView='overview';state.run={status:'running',stage:0,completed:[],startedAt:now()};state.outputs=[];state.approvals=[];addAudit('Mission run started from local inputs.');save();render();progress();}
+function progress(){if(state.run.status!=='running')return;const i=state.run.stage; state.outputs.push(makeOutput(i));state.run.completed.push(i);addAudit(`${stages[i][0]} completed: ${stages[i][1]}.`); if(i===5){state.run.status='complete';addApprovals();addAudit('Planning run complete. Four external-action gates are awaiting approval.');save();render();return}state.run.stage=i+1;save();render();timer=setTimeout(progress,window.RABBIT_TEST_FAST?80:950);}
+function nav(view){state.activeView=view;save();render();$('#sidebar').classList.remove('open');$('#menuButton').setAttribute('aria-expanded','false');}
+function outputCard(o){return `<li><button data-output="${o.id}">${esc(o.agent)} · ${esc(o.title)}</button><small>${esc(o.createdAt)}</small></li>`}
+function head(title,sub,action=''){return `<div class="view-head"><div><h1>${title}</h1><p>${sub}</p></div>${action}</div>`}
+function overview(){const r=state.run, done=r.completed.length, current=r.status==='running'?stages[r.stage][0]:r.status==='complete'?'Ready for your review':'Waiting for a mission';return `<section class="hero"><div><p class="kicker">A calmer GTM operating system</p><h1 class="title">Turn a business idea into a clear, approval-led GTM plan.</h1><p class="subtitle">Six coordinated planning agents pass useful work forward. Rabbit does not pretend to browse, send, publish, book, or spend money on your behalf.</p><div class="button-row"><button class="primary-button" id="startRun">${state.mission?'Build my GTM plan':'Set up my mission'}</button><button class="secondary-button" data-view="mission">${state.mission?'Edit mission':'Start here'}</button></div></div><div class="card"><p class="label">Autonomy status</p><h2>${r.status==='running'?'Planning locally':'Approval-led'}</h2><p class="muted">Drafting runs automatically. External actions always stop for your decision.</p><div class="progress"><i style="width:${done/6*100}%"></i></div><p class="small muted">${done} of 6 planning stages complete</p></div></section><div class="grid three"><article class="card metric"><span>Mission progress</span><strong>${done}/6</strong><span>${r.status==='complete'?'Plan complete and ready to review.':'Planning artifacts created locally.'}</span></article><article class="card metric"><span>Current agent</span><strong>${current}</strong><span>Next milestone: ${r.status==='running'?stages[r.stage][1]:'Define a mission or review outputs.'}</span></article><article class="card metric"><span>Approval gates</span><strong>${state.approvals.filter(a=>a.status==='needs approval').length}</strong><span>Sending, publishing, booking, and budget changes are gated.</span></article></div><div class="grid two" style="margin-top:16px"><article class="card"><h2>Agent handoff</h2><div class="agent-list">${stages.map(([n,d],i)=>`<div class="agent ${r.status==='running'&&r.stage===i?'active':''}"><span class="agent-index">${i+1}</span><div><div class="agent-name">${n}</div><div class="agent-detail">${d}</div></div><span class="pill ${r.completed.includes(i)?'done':r.status==='running'&&r.stage===i?'active':''}">${r.completed.includes(i)?'Complete':r.status==='running'&&r.stage===i?'Working':'Queued'}</span></div>`).join('')}</div></article><article class="card"><h2>Recent outputs</h2>${state.outputs.length?`<ul class="output-list">${state.outputs.slice().reverse().slice(0,5).map(outputCard).join('')}</ul>`:'<div class="empty">Your planning outputs will appear here after you build a GTM plan.</div>'}</article></div><div class="card" style="margin-top:16px"><h2>Evidence ledger</h2><p class="muted small">An honest record of what Rabbit created locally. It does not represent live market research or external activity.</p>${state.audit.length?`<ul class="audit-list">${state.audit.slice(0,8).map(a=>`<li>${esc(a.text)}<small>${esc(a.time)}</small></li>`).join('')}</ul>`:'<div class="empty">No run has been started. Add your mission to begin.</div>'}</div>`}
+function mission(){const b=business();return `${head('Mission','Tell Rabbit what you are building. These inputs drive every locally generated draft.')}<section class="card"><form id="missionForm"><div class="form-grid"><div><label for="website">Product website</label><input id="website" name="website" required placeholder="example.com" value="${esc(state.mission?.website||'')}"></div><div><label for="goal">Core goal</label><input id="goal" name="goal" required placeholder="e.g. find early design partners" value="${esc(state.mission?.goal||'')}"></div><div class="full"><label for="offer">What do you sell?</label><textarea id="offer" name="offer" required placeholder="Describe the product, service, and the outcome it helps create.">${esc(state.mission?.offer||'')}</textarea></div><div class="full"><label for="market">Target market</label><textarea id="market" name="market" required placeholder="Who is it for? Include role, company type, or industry if known.">${esc(state.mission?.market||'')}</textarea></div></div><div class="button-row"><button class="primary-button" type="submit">Save mission & build plan</button>${state.mission?'<button class="secondary-button" type="button" id="saveMission">Save only</button>':''}</div></form></section><p class="notice">Static mode uses your inputs only. It does not inspect your website, search the web, or contact anyone.</p>`}
+function accounts(){const signal=state.outputs.find(o=>o.agent==='Signal');return `${head('Accounts','A responsible account-research starting point—not a contact database.')}<section class="grid two"><article class="card"><h2>Account criteria</h2>${signal?`<div class="stage-output">${esc(signal.body)}</div>`:'<div class="empty">Complete the Signal stage to create your account criteria.</div>'}</article><article class="card"><h2>Research task template</h2><p class="muted">For each company you choose, capture only truthful public context.</p><ul class="output-list"><li><strong>Company and website</strong><small>Who they are and what they sell.</small></li><li><strong>Relevant public signal</strong><small>A job post, launch, initiative, or stated priority—with source link.</small></li><li><strong>Why the hypothesis fits</strong><small>Connect the signal to your problem statement; do not assume intent.</small></li></ul><div class="notice small">Rabbit has not discovered accounts or personal contact details. Add a compliant source later if your process needs one.</div></article></section>`}
+function assets(){const out=state.outputs.filter(o=>['Writer','Operator'].includes(o.agent));return `${head('Content & assets','Drafts are ready to edit and approve. Nothing has been sent or published.','<div class="button-row"><button class="secondary-button" id="exportButton">Download plan</button></div>')}<section class="grid two">${out.length?out.map(o=>`<article class="card"><p class="label">${esc(o.agent)}</p><h2>${esc(o.title)}</h2><div class="stage-output">${esc(o.body)}</div></article>`).join(''):'<div class="empty">Complete Writer and Operator stages to see messaging and a campaign plan.</div>'}</section>`}
+function approvals(){return `${head('Approvals','Rabbit pauses every external action for a clear human decision.')}<div class="notice">Approving an item records your decision in this local workspace. It does not send email, publish content, book time, or change a budget.</div><section class="grid" style="margin-top:16px">${state.approvals.length?state.approvals.map(a=>`<article class="card approval"><div><span class="tag ${a.status==='approved'?'approved':''}">${a.status==='approved'?'Approved locally':'Needs approval'}</span><h3>${esc(a.title)}</h3><p class="approval-meta">${esc(a.type)} · ${esc(a.detail)}</p></div><div class="button-row">${a.status==='needs approval'?`<button class="primary-button" data-approve="${a.id}">Approve draft</button>`:'<button class="secondary-button" data-revoke="${a.id}">Revoke</button>'}</div></article>`).join(''):'<div class="empty">Approval gates will appear once a plan is complete.</div>'}</section>`}
+function results(){const opt=state.outputs.find(o=>o.agent==='Optimizer');return `${head('Results','A results-first view that distinguishes plans from observed outcomes.','<div class="button-row"><button class="secondary-button" id="exportButton">Download plan</button></div>')}<section class="grid three"><article class="card metric"><span>Observed outcomes</span><strong>0</strong><span>No external activity is connected or claimed.</span></article><article class="card metric"><span>Plan outputs</span><strong>${state.outputs.length}</strong><span>Local strategy artifacts created from your mission.</span></article><article class="card metric"><span>Next best action</span><strong>Test</strong><span>Interview five relevant people before expanding a channel.</span></article></section><section class="grid two" style="margin-top:16px"><article class="card"><h2>Optimization recommendation</h2>${opt?`<div class="stage-output">${esc(opt.body)}</div>`:'<div class="empty">Complete the Optimizer stage to create a learning plan.</div>'}</article><article class="card"><h2>How to make this real</h2><p class="muted">Use the drafts, gather consented feedback, and record actual outcomes. A future backend can connect approved tools and store data safely.</p><div class="notice small">Seed demos, when used, must be labeled as examples. This workspace currently contains no seed metrics.</div></article></section>`}
+function settings(){return `${head('Integrations & settings','Free MVP routes for when you are ready to add a private backend.')}<section class="grid two"><article class="card"><div class="integration"><div><h3>Ollama</h3><p>Run models on your own computer for local drafting.</p></div><span class="badge">Not connected</span></div><hr><div class="integration"><div><h3>Google Gemini free tier</h3><p>Optional hosted drafting within free-tier limits.</p></div><span class="badge">Not connected</span></div><hr><div class="integration"><div><h3>Supabase free tier</h3><p>Optional database and authentication for a real multi-user MVP.</p></div><span class="badge">Not connected</span></div><hr><div class="integration"><div><h3>Resend free tier</h3><p>Optional email delivery after an explicit approval workflow.</p></div><span class="badge">Not connected</span></div></article><article class="card"><h2>Static-mode safety</h2><p class="muted">This GitHub Pages version keeps all workspace data in your browser. It cannot safely hold secret keys, so integrations remain disconnected.</p><p class="muted">Any API key, email delivery, calendar access, publishing tool, or budget control needs a server-side backend and consent-aware approval checks.</p><div class="button-row"><button class="secondary-button" id="downloadData">Download local workspace</button></div></article></section>`}
+function content(){switch(state.activeView){case'mission':return mission();case'accounts':return accounts();case'assets':return assets();case'approvals':return approvals();case'results':return results();case'settings':return settings();default:return overview();}}
+function render(){clearTimeout(timer);$('#mainContent').innerHTML=content();document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===state.activeView));$('#approvalCount').textContent=state.approvals.filter(a=>a.status==='needs approval').length;$('#runStatus').textContent=state.run.status==='running'?`${stages[state.run.stage][0]} is planning`:(state.run.status==='complete'?'Plan ready for review':'Ready to plan');bind();if(state.run.status==='running')timer=setTimeout(progress,window.RABBIT_TEST_FAST?80:950);}
+function bind(){document.querySelectorAll('[data-view]').forEach(x=>x.addEventListener('click',()=>nav(x.dataset.view)));$('#startRun')?.addEventListener('click',startRun);$('#missionForm')?.addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget);state.mission=Object.fromEntries(f);addAudit('Mission saved.');save();startRun()});$('#saveMission')?.addEventListener('click',()=>{const f=new FormData($('#missionForm'));state.mission=Object.fromEntries(f);addAudit('Mission saved without starting a run.');save();nav('overview')});document.querySelectorAll('[data-approve]').forEach(x=>x.addEventListener('click',()=>approval(x.dataset.approve,true)));document.querySelectorAll('[data-revoke]').forEach(x=>x.addEventListener('click',()=>approval(x.dataset.revoke,false)));document.querySelectorAll('[data-output]').forEach(x=>x.addEventListener('click',()=>showOutput(x.dataset.output)));$('#exportButton')?.addEventListener('click',exportPlan);$('#downloadData')?.addEventListener('click',()=>download('rabbit-workspace.json',JSON.stringify(state,null,2),'application/json'));}
+function approval(id,yes){const a=state.approvals.find(x=>x.id===id);a.status=yes?'approved':'needs approval';addAudit(`${a.type} ${yes?'approved locally':'approval revoked'}. No external action was performed.`);save();render();}
+function showOutput(id){const o=state.outputs.find(x=>x.id===id);openModal(o.title,`<div class="stage-output">${esc(o.body)}</div>`)}
+function openModal(title,body,{showClose=true}={}){lastFocus=document.activeElement;const closeControl=showClose?`<div class="button-row"><button class="primary-button" id="modalClose">Close</button></div>`:'';$('#modal').innerHTML=`<h2 id="modalTitle">${esc(title)}</h2>${body}${closeControl}`;$('#modalBackdrop').classList.remove('hidden');$('#modalBackdrop').setAttribute('aria-hidden','false');const focusTarget=$('#modalClose')||$('#confirmReset')||$('#cancelReset');focusTarget?.focus();$('#modalClose')?.addEventListener('click',closeModal);}
+function closeModal(){if($('#modalBackdrop').classList.contains('hidden'))return;$('#modalBackdrop').classList.add('hidden');$('#modalBackdrop').setAttribute('aria-hidden','true');lastFocus?.focus();}
+function download(name,data,type='text/plain'){const url=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),250);}
+function exportPlan(){const lines=[`Rabbit GTM plan`, `Generated: ${now()}`, '', ...state.outputs.flatMap(o=>[`${o.agent} — ${o.title}`,o.body,'']), 'Safety: Outputs are planning drafts. No email was sent, content published, meetings booked, or budgets changed.'];download('rabbit-gtm-plan.txt',lines.join('\n'));addAudit('Downloaded GTM plan.');save();}
+$('#menuButton').addEventListener('click',()=>{const s=$('#sidebar');const open=s.classList.toggle('open');$('#menuButton').setAttribute('aria-expanded',open);});$('#resetButton').addEventListener('click',()=>openModal('Reset this workspace?','<p>This will erase the mission, planning outputs, approvals, and audit trail stored in this browser. This cannot be undone.</p><div class="button-row"><button class="danger-button" id="confirmReset">Yes, reset everything</button><button class="secondary-button" id="cancelReset">Cancel</button></div>',{showClose:false}));$('#modalBackdrop').addEventListener('click',e=>{if(e.target===$('#modalBackdrop'))closeModal()});window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();$('#sidebar').classList.remove('open');$('#menuButton').setAttribute('aria-expanded','false')}});document.addEventListener('click',e=>{if(e.target.id==='confirmReset'){clearTimeout(timer);localStorage.removeItem(STORE);state=structuredClone(defaults);closeModal();render();}if(e.target.id==='cancelReset')closeModal();});render();
