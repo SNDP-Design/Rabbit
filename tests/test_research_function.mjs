@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {validUrl,extractHtml,research,readBounded} from '../functions/api/research.js';
+const W='123e4567-e89b-12d3-a456-426614174000',C='123e4567-e89b-12d3-a456-426614174001';
+for(const url of ['http://127.0.0.1','http://169.254.169.254','https://example.com:8080','https://a:b@example.com','http://100.64.0.1','http://[::1]/','http://[ff00::1]/'])assert.throws(()=>validUrl(url));
+const doc=extractHtml('<title>Rabbit &amp; Co</title><meta name="description" content="Helpful"><h1>Company <em>heading</em></h1><script>bad</script><a href="/pricing">Pricing</a>');assert.equal(doc.title,'Rabbit & Co');assert.equal(doc.headings[0],'Company heading');assert.equal(doc.links[0],'/pricing');
+const pages=new Map([['https://example.com/', '<title>Rabbit</title><a href="/pricing">Pricing</a>'],['https://example.com/pricing','<title>Pricing</title><h1>Pricing</h1>']]);
+const fake=async url=>new Response(pages.get(url),{headers:{'content-type':'text/html'}});const result=await research({workspace_id:W,company_id:C,company_url:'https://example.com/'},fake);assert.equal(result.pages_used.length,2);assert(!result.knowledge.some(x=>x.kind==='UNKNOWN'&&x.topic==='pricing'));assert.equal(new Set(result.knowledge.filter(x=>x.kind==='FACT').map(x=>x.statement)).size,result.knowledge.filter(x=>x.kind==='FACT').length);
+const tooBig=new Response('x',{headers:{'content-length':'700001'}});await assert.rejects(()=>readBounded(tooBig));
+const mixed=async url=>new Response(url.endsWith('/')?'<title>Root</title><a href="mailto:a@example.com">bad</a><a href="/pricing">good</a>':'<title>Pricing</title>',{headers:{'content-type':'text/html'}});assert.equal((await research({workspace_id:W,company_id:C,company_url:'https://example.com/'},mixed)).pages_used.length,2);
+console.log('Cloudflare helper tests: 5 passed');
