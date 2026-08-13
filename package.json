@@ -1,17 +1,17 @@
 {
   "name": "rabbit",
-  "version": "2.4.0",
-  "description": "Fully Autonomous AI Agent Go-To-Market Platform",
+  "version": "3.0.2",
+  "description": "Local-first Company Intelligence Agent foundation",
   "type": "module",
   "scripts": {
-    "start": "python3 -m http.server 3000"
+    "start": "python3 agent_engine.py --serve --port 3000"
   },
   "keywords": [
     "gtm",
     "ai-agents",
-    "autonomous",
-    "explee",
-    "prospecting"
+    "company-intelligence",
+    "evidence",
+    "founder-review"
   ],
   "author": "SNDP-Design",
   "license": "MIT"

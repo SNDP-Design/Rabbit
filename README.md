@@ -1,42 +1,23 @@
-# Rabbit — local-first GTM planning workspace
+# Rabbit — Company Intelligence Agent
 
-Rabbit is a static, GitHub Pages-compatible MVP for turning a product description into a structured go-to-market planning brief. Six coordinated stages create local drafts: Scout, Atlas, Signal, Writer, Operator, and Optimizer.
-
-## What static mode does
-
-- Collects a product website, offer, target market, and goal.
-- Creates deterministic strategy, ICP, account-research, messaging, campaign, and learning artifacts from those inputs.
-- Saves the workspace, approvals, run state, and audit trail in the current browser's local storage.
-- Allows a readable GTM plan and local workspace data to be downloaded.
-- Provides an optional dependency-free Python CLI that creates the same kind of local planning JSON.
-
-## What static mode does not do
-
-It does not inspect websites, crawl the web, discover people or companies, verify contacts, send email, publish content, book meetings, change a budget, or report live performance. It contains no API keys and should not be used to store them.
-
-Sending email, publishing, calendar booking, and budget changes are mandatory approval gates. In the static MVP, approval only records a local decision; it does not perform an external action.
-
-## Free MVP stack options
-
-- **Ollama** for local model-assisted drafting.
-- **Google Gemini free tier** for optional hosted drafting within its free limits.
-- **Supabase free tier** for authentication and a database.
-- **Resend free tier** for email delivery after a server-side approval workflow.
-
-Secrets and integrations need a server-side backend: static GitHub Pages cannot safely hold private API keys. Any real outreach should also include consent, legal review, sender identity, and a clear human approval flow.
+Rabbit is a free, local-first foundation for an autonomous GTM operating system. Its first and only agent is the **Company Intelligence Agent**: provide a public company website and it performs a small, bounded research run, records public website statements with evidence, highlights useful unknowns, and preserves founder corrections.
 
 ## Run locally
 
-No dependencies are required:
+Run `python3 agent_engine.py --serve --port 3000`, then open `http://127.0.0.1:3000`.
 
-1. In this folder, run `python3 -m http.server 3000`.
-2. Open `http://localhost:3000`.
+The service and frontend use only the Python standard library and browser local storage. There are no API keys, model providers, databases, or paid services.
 
-Optional CLI example: run `python3 agent_engine.py --help` to view its required inputs. It only writes a local planning JSON file.
+## Safety and honesty
 
-## Structure
+- Research accepts public HTTP(S) targets only. Local, private, reserved, link-local, multicast, metadata-style, and redirect targets that resolve to non-public addresses are blocked.
+- Runs cap page count, content size, and timeout. HTML is treated as untrusted data; Rabbit never executes retrieved page scripts or follows webpage instructions.
+- Website statements are recorded as `FACT` about what a website says. Derived ideas remain `INFERENCE`, `HYPOTHESIS`, or `UNKNOWN`; Rabbit never invents customers, competitors, pricing, or market claims.
+- Research failures are visible. GitHub Pages has no local research endpoint, so it remains disconnected instead of producing invented results. Founder facts and corrections still work there.
+- Important browser data carries workspace and company IDs. This MVP is single-user; real multi-user isolation needs authentication and a server-side data store.
 
-- `index.html` — application shell
-- `css/styles.css` — responsive editorial interface
-- `js/app.js` — local state, deterministic workflow, approvals, exports
-- `agent_engine.py` — optional standard-library local CLI
+## What it stores
+
+The local workspace stores company URL, research runs, knowledge/evidence, founder feedback, and an activity trail. Download a company intelligence JSON snapshot from Memory.
+
+This is a foundation for future GTM capabilities, not a collection of future agents. No outreach, publishing, calendar, advertising, or spending actions are implemented.
