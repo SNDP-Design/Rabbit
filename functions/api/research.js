@@ -452,6 +452,47 @@ function validateSynthesis(raw, pages) {
   return { company: companyFinding?.kind !== "UNKNOWN" ? companyFinding.value : "", findings, decision };
 }
 
+function buildKnowledgeBase(company, findings, pages, decision, generatedAt) {
+  const byTitle = new Map(findings.map(item => [item.title, item]));
+  const value = title => byTitle.get(title)?.value || "Not established from the reviewed pages.";
+  const evidence = title => byTitle.get(title)?.evidence || [];
+  return {
+    version: 1,
+    generated_at: generatedAt,
+    company,
+    source_count: pages.length,
+    source_urls: pages.map(page => page.url),
+    product: {
+      name_or_description: value("Product"),
+      problem: value("Problem being solved"),
+      capabilities: value("Product capabilities"),
+      value_proposition: value("Value proposition"),
+      positioning: value("Positioning"),
+      evidence: [...evidence("Product"), ...evidence("Product capabilities"), ...evidence("Value proposition")].slice(0, 6)
+    },
+    customers: {
+      target_customers: value("Likely target customers"),
+      likely_icp: value("Likely ICP"),
+      industries: value("Industries"),
+      use_cases: value("Use cases"),
+      evidence: [...evidence("Likely target customers"), ...evidence("Likely ICP"), ...evidence("Use cases")].slice(0, 6)
+    },
+    market: {
+      category: value("Market / category"),
+      positioning: value("Positioning"),
+      differentiators: value("Differentiators"),
+      competitors: value("Competitors"),
+      evidence: [...evidence("Market / category"), ...evidence("Differentiators"), ...evidence("Competitors")].slice(0, 6)
+    },
+    commercial: {
+      pricing_or_business_model: value("Pricing / business model"),
+      messaging: value("Messaging"),
+      evidence: [...evidence("Pricing / business model"), ...evidence("Messaging")].slice(0, 4)
+    },
+    judgment: decision
+  };
+}
+
 export async function synthesizeWithOpenAI(pages, apiKey, model = "gpt-5-mini", fetcher = fetch) {
   if (!apiKey) throw new Error("OpenAI is not configured.");
   const sourceText = buildSynthesisInput(pages);
@@ -527,6 +568,7 @@ export async function research(value, options = {}) {
   }
   const known = findings.filter(item => item.kind !== "UNKNOWN").length;
   const generatedAt = new Date().toISOString();
+  const knowledgeBase = buildKnowledgeBase(company, findings, pages, decision, generatedAt);
   let memoryChars = 0;
   const memoryPages = pages.map(page => {
     if (memoryChars >= MAX_MEMORY_CHARS) return { url: page.url, title: page.title || page.url, text: "", truncated: true };
@@ -534,8 +576,8 @@ export async function research(value, options = {}) {
     memoryChars += text.length;
     return { url: page.url, title: page.title || page.url, description: page.description, headings: page.headings, text, truncated: text.length < page.text.length };
   });
-  const memory = { version: 1, generated_at: generatedAt, company_url: home.url, company, pages: memoryPages, findings, decision, crawl: { pages_reviewed: pages.length, page_cap: MAX_PAGES, failures: failures.length } };
-  return { status: "complete", company_url: home.url, company, generated_at: generatedAt, duration_seconds: Math.round((Date.now() - started) / 100) / 10, pages: pages.map(page => ({ url: page.url, title: page.title || page.url })), findings, decision, memory, coverage: { known, unknown: findings.length - known, total: findings.length }, failures: failures.slice(0, 8), limits: { page_cap: MAX_PAGES, pages_reviewed: pages.length, memory_chars: memoryChars }, analysis_engine: analysisEngine, analysis_warning: analysisWarning };
+  const memory = { version: 1, generated_at: generatedAt, company_url: home.url, company, pages: memoryPages, findings, knowledge_base: knowledgeBase, decision, crawl: { pages_reviewed: pages.length, page_cap: MAX_PAGES, failures: failures.length } };
+  return { status: "complete", company_url: home.url, company, generated_at: generatedAt, duration_seconds: Math.round((Date.now() - started) / 100) / 10, pages: pages.map(page => ({ url: page.url, title: page.title || page.url })), findings, knowledge_base: knowledgeBase, decision, memory, coverage: { known, unknown: findings.length - known, total: findings.length }, failures: failures.slice(0, 8), limits: { page_cap: MAX_PAGES, pages_reviewed: pages.length, memory_chars: memoryChars }, analysis_engine: analysisEngine, analysis_warning: analysisWarning };
 }
 
 async function handler(request, env = {}) {

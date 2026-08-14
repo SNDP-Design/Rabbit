@@ -20,7 +20,7 @@ To activate AI synthesis securely, add an encrypted Cloudflare Pages secret name
 
 ## Crawl, memory, and decision
 
-Rabbit follows sitemap URLs and internal HTML links across the site, prioritizing homepage, product, feature, solution, use-case, customer, pricing, about, documentation, and useful blog pages. A research run is safely capped at 60 public HTML pages and reports pages it could not read. The extracted readable text is returned as a browser-local website memory with the findings and evidence, so later decisions can be based on the complete captured research context. The Terra synthesis also creates an intelligence decision with the strongest signals, risks, recommendation, and next questions.
+Rabbit follows sitemap URLs and internal HTML links across the site, prioritizing homepage, product, feature, solution, use-case, customer, pricing, about, documentation, and useful blog pages. A research run is safely capped at 60 public HTML pages and reports pages it could not read. The extracted readable text is returned as a browser-local website memory and normalized knowledge base containing product, problem, capabilities, value proposition, customers, ICP, industries, use cases, pricing, positioning, differentiators, competitors, and source links. Terra makes its intelligence decision from this collective knowledge base, with strongest signals, risks, recommendation, and next questions.
 
 ## Safety and honesty
 

@@ -100,6 +100,12 @@ function renderResult(result) {
   $("#memory-status").textContent = savedPages
     ? `Website memory saved in this browser: ${savedPages} internal pages, ${result.coverage.total} intelligence areas, and the supporting evidence.`
     : "The report is available for this run, but browser storage was unavailable for saving the memory.";
+  const kb = result.knowledge_base || result.memory?.knowledge_base || {};
+  $("#kb-product").textContent = [kb.product?.name_or_description, kb.product?.capabilities].filter(Boolean).join(" — ") || "Not established from the reviewed pages.";
+  $("#kb-problem").textContent = [kb.product?.problem, kb.product?.value_proposition].filter(Boolean).join(" — ") || "Not established from the reviewed pages.";
+  $("#kb-customers").textContent = [kb.customers?.target_customers, kb.customers?.likely_icp, kb.customers?.industries].filter(Boolean).join(" — ") || "Not established from the reviewed pages.";
+  $("#kb-market").textContent = [kb.market?.category, kb.market?.differentiators, kb.market?.competitors].filter(Boolean).join(" — ") || "Not established from the reviewed pages.";
+  $("#kb-commercial").textContent = [kb.commercial?.pricing_or_business_model, kb.commercial?.messaging].filter(Boolean).join(" — ") || "Not established from the reviewed pages.";
   $("#findings").innerHTML = result.findings.map(item => {
     const sources = item.evidence.map(source => `<a class="evidence-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.excerpt)}<span>${escapeHtml(source.url)}</span></a>`).join("");
     return `<article class="finding"><div class="finding-top"><h3>${escapeHtml(item.title)}</h3><span class="badge ${item.kind.toLowerCase()}">${item.kind} · ${escapeHtml(item.confidence)}</span></div><p class="finding-value">${escapeHtml(item.value)}</p>${item.note ? `<p class="finding-note">${escapeHtml(item.note)}</p>` : ""}${sources}</article>`;

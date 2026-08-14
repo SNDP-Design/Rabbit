@@ -392,10 +392,25 @@ def crawl(company_url: str) -> dict:
         "next_questions": ["Which customer segment converts and retains best?", "Which claims are supported by customer or revenue data?"],
         "evidence": [],
     }
+    by_title = {item["title"]: item for item in findings}
+    def kb_value(title: str) -> str:
+        return by_title.get(title, {}).get("value") or "Not established from the reviewed pages."
+    knowledge_base = {
+        "version": 1,
+        "generated_at": now(),
+        "company": company,
+        "source_count": len(pages),
+        "source_urls": [p["url"] for p in pages],
+        "product": {"name_or_description": kb_value("Product"), "problem": kb_value("Problem being solved"), "capabilities": kb_value("Product capabilities"), "value_proposition": kb_value("Value proposition"), "positioning": kb_value("Positioning")},
+        "customers": {"target_customers": kb_value("Likely target customers"), "likely_icp": kb_value("Likely ICP"), "industries": kb_value("Industries"), "use_cases": kb_value("Use cases")},
+        "market": {"category": kb_value("Market / category"), "positioning": kb_value("Positioning"), "differentiators": kb_value("Differentiators"), "competitors": kb_value("Competitors")},
+        "commercial": {"pricing_or_business_model": kb_value("Pricing / business model"), "messaging": kb_value("Messaging")},
+        "judgment": decision,
+    }
     memory = {
         "version": 1, "generated_at": now(), "company_url": final_root, "company": company,
         "pages": [{"url": p["url"], "title": p["title"] or p["url"], "description": p["description"], "headings": p["headings"], "text": p["text"]} for p in pages],
-        "findings": findings, "decision": decision,
+        "findings": findings, "knowledge_base": knowledge_base, "decision": decision,
         "crawl": {"pages_reviewed": len(pages), "page_cap": MAX_PAGES, "failures": len(failures)},
     }
     return {
@@ -406,6 +421,7 @@ def crawl(company_url: str) -> dict:
         "duration_seconds": round(time.monotonic() - started, 1),
         "pages": [{"url": p["url"], "title": p["title"] or p["url"]} for p in pages],
         "findings": findings,
+        "knowledge_base": knowledge_base,
         "decision": decision,
         "memory": memory,
         "coverage": {"known": known, "unknown": len(findings) - known, "total": len(findings)},
