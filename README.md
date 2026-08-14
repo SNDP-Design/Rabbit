@@ -14,9 +14,9 @@ Rabbit uses the Python standard library locally and a matching Cloudflare Pages 
 
 ## OpenAI synthesis
 
-The production function can use one bounded `gpt-5-mini` call to distill all successfully crawled pages into the structured brief. Every factual evidence excerpt is checked against the retrieved source text before it is shown. If OpenAI is unavailable or not configured, Rabbit visibly falls back to its local evidence rules.
+The production function uses a bounded two-stage OpenAI workflow: `gpt-5.6-luna` first compresses the crawled pages into an evidence digest, then `gpt-5.6-terra` turns that digest and a verification catalog into the structured brief. Every factual evidence excerpt is checked against the retrieved source text before it is shown. If OpenAI is unavailable or not configured, Rabbit visibly falls back to its local evidence rules.
 
-To activate AI synthesis securely, add an encrypted Cloudflare Pages secret named `OPENAI_API_KEY` to the `rabbit-gtm` project. Do not place the key in the website, repository, or browser. An optional `OPENAI_MODEL` variable can change the model; the default is `gpt-5-mini`.
+To activate AI synthesis securely, add an encrypted Cloudflare Pages secret named `OPENAI_API_KEY` to the `rabbit-gtm` project. Do not place the key in the website, repository, or browser. Optional `OPENAI_TERRA_MODEL` and `OPENAI_LUNA_MODEL` variables can change the two model IDs; the defaults are `gpt-5.6-terra` and `gpt-5.6-luna`.
 
 ## What the MVP reviews
 
