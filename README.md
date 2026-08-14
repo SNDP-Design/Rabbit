@@ -2,6 +2,10 @@
 
 Rabbit is a free, local-first company intelligence web app. Enter a public website and its coordinated research agents recursively crawl discoverable same-site pages, then produce a structured brief with evidence links, confidence, clearly labelled facts, inferences, and unknowns, plus a practical intelligence decision.
 
+The bottom-right voice assistant lets visitors ask spoken or typed questions about the website Rabbit reviewed. Gemini Live provides the natural, low-latency conversation, while Rabbit limits its answers to the saved crawl and shows a supporting page. The selected Gemini native-audio model has a free tier for MVP use; typed questions remain available when microphone access is blocked.
+
+To activate natural voice securely, create a free Gemini API key in Google AI Studio and save it as the encrypted Cloudflare Pages secret `GEMINI_API_KEY`. Rabbit exchanges that permanent secret for a short-lived, one-use browser token, so the permanent key is never exposed to visitors. For local testing, start Rabbit with `GEMINI_API_KEY` set in the Terminal environment.
+
 **Live app:** [rabbit-gtm.pages.dev](https://rabbit-gtm.pages.dev/)
 
 ## Start Rabbit

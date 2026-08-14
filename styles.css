@@ -913,3 +913,43 @@ body {
     display: none;
   }
 }
+
+.voice-assistant { position: fixed; right: 24px; bottom: 24px; z-index: 150; display: flex; flex-direction: column; align-items: flex-end; gap: 14px; }
+.voice-launcher { position: relative; width: 60px; height: 60px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.18); border-radius: 20px; background: var(--green); color: #10251b; box-shadow: 0 16px 42px rgba(0,0,0,.42), 0 0 0 7px rgba(62,207,142,.1); cursor: pointer; transition: transform .2s ease, background .2s ease; }
+.voice-launcher:hover { transform: translateY(-2px); background: #57d99d; }
+.voice-launcher:focus-visible { outline: 3px solid rgba(62,207,142,.35); outline-offset: 4px; }
+.voice-mic-icon { width: 25px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.voice-launcher-pulse { position: absolute; inset: -1px; border: 1px solid var(--green); border-radius: 20px; opacity: 0; pointer-events: none; }
+.voice-assistant.listening .voice-launcher { background: #fff; }
+.voice-assistant.listening .voice-launcher-pulse { animation: voice-pulse 1.3s infinite; }
+.voice-panel { width: min(380px, calc(100vw - 32px)); max-height: min(610px, calc(100vh - 112px)); overflow: hidden; display: flex; flex-direction: column; border: 1px solid #3b3b41; border-radius: 20px; background: #202023; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+.voice-panel.hidden { display: none; }
+.voice-panel-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 20px 15px; border-bottom: 1px solid var(--line); }
+.voice-kicker { color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: .15em; }
+.voice-panel-head h2 { margin: 5px 0 0; font-size: 18px; letter-spacing: -.02em; }
+.voice-close { width: 32px; height: 32px; border: 0; border-radius: 9px; background: #2a2a2e; color: #bdbdc4; font-size: 22px; line-height: 1; cursor: pointer; }
+.voice-status { display: flex; align-items: center; gap: 8px; padding: 11px 20px; color: #a1a1aa; font-size: 12px; }
+.voice-status span { width: 7px; height: 7px; border-radius: 50%; background: #777780; }
+.voice-status.listening { color: #9de8c0; }
+.voice-status.listening span { background: var(--green); box-shadow: 0 0 0 5px rgba(62,207,142,.1); animation: pulse 1.2s infinite; }
+.voice-status.thinking span { background: var(--amber); animation: pulse 1.2s infinite; }
+.voice-conversation { min-height: 145px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 6px 20px 15px; }
+.voice-message { max-width: 92%; padding: 11px 13px; border-radius: 13px; font-size: 13px; line-height: 1.5; }
+.voice-message.assistant { align-self: flex-start; background: #29292d; color: #dedee3; border-bottom-left-radius: 4px; }
+.voice-message.user { align-self: flex-end; background: #173d2d; color: #c9f2db; border-bottom-right-radius: 4px; }
+.voice-source { display: block; margin-top: 8px; color: #77dca8; font-size: 11px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.voice-suggestions { display: flex; gap: 7px; overflow-x: auto; padding: 0 20px 13px; }
+.voice-suggestions button { flex: 0 0 auto; border: 1px solid #3b3b41; border-radius: 999px; background: transparent; color: #bdbdc4; padding: 7px 9px; font-size: 11px; cursor: pointer; }
+.voice-suggestions button:hover { border-color: var(--green); color: var(--green); }
+.voice-text-form { display: flex; gap: 8px; padding: 13px; border-top: 1px solid var(--line); background: #1c1c1f; }
+.voice-text-form input { min-width: 0; flex: 1; border: 1px solid #3a3a40; border-radius: 10px; outline: 0; background: #242428; color: #ededed; padding: 10px 11px; font: inherit; font-size: 13px; }
+.voice-text-form input:focus { border-color: var(--green); }
+.voice-text-form button { border: 0; border-radius: 10px; background: var(--green); color: #10251b; padding: 0 13px; font-weight: 750; cursor: pointer; }
+.voice-note { margin: 0; padding: 0 20px 14px; background: #1c1c1f; color: #777780; font-size: 11px; }
+@keyframes voice-pulse { 0% { transform: scale(1); opacity: .65; } 100% { transform: scale(1.45); opacity: 0; } }
+
+@media (max-width: 700px) {
+  .voice-assistant { right: 16px; bottom: 16px; }
+  .voice-launcher { width: 56px; height: 56px; border-radius: 18px; }
+  .voice-panel { max-height: calc(100vh - 92px); }
+}

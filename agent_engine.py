@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import json
+import os
 import re
 import socket
 import time
@@ -451,13 +452,16 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
-        self.send_header("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+        self.send_header("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self' wss://generativelanguage.googleapis.com; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
         super().end_headers()
 
     def log_message(self, format, *args):
         return
 
     def do_POST(self):
+        if self.path == "/api/gemini-token":
+            self._gemini_token()
+            return
         if self.path != "/api/research":
             self.send_error(404)
             return
@@ -474,6 +478,30 @@ class Handler(SimpleHTTPRequestHandler):
             self._json(400, {"error": clean(str(exc), 300)})
         except Exception:
             self._json(500, {"error": "Rabbit could not finish this research run safely. Please try another public website."})
+
+    def _gemini_token(self):
+        api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+        if not api_key:
+            self._json(503, {"error": "Natural voice is not configured yet."})
+            return
+        request = Request(
+            "https://generativelanguage.googleapis.com/v1beta/auth_tokens",
+            data=json.dumps({
+                "uses": 1,
+                "expireTime": datetime.fromtimestamp(time.time() + 1800, timezone.utc).isoformat(),
+                "newSessionExpireTime": datetime.fromtimestamp(time.time() + 60, timezone.utc).isoformat(),
+            }).encode(),
+            headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
+            method="POST",
+        )
+        try:
+            with build_opener().open(request, timeout=10) as response:
+                token = json.loads(response.read(100_000)).get("name")
+            if not token:
+                raise ValueError("Natural voice could not start.")
+            self._json(200, {"token": token, "model": "gemini-2.5-flash-native-audio-preview-12-2025"})
+        except Exception:
+            self._json(503, {"error": "Natural voice could not start. Check the Gemini setup and try again."})
 
     def _json(self, status: int, value: dict):
         payload = json.dumps(value).encode()

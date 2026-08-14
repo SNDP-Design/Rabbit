@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
   <div class="app-shell">
@@ -97,6 +97,33 @@
       </section>
     </main>
   </div>
-  <script src="app.js?v=4" defer></script>
+  <aside class="voice-assistant" id="voice-assistant" aria-label="Ask Rabbit by voice">
+    <section class="voice-panel hidden" id="voice-panel" aria-live="polite">
+      <header class="voice-panel-head">
+        <div><span class="voice-kicker">VOICE AI</span><h2>Ask about this website</h2></div>
+        <button class="voice-close" id="voice-close" type="button" aria-label="Close voice assistant">×</button>
+      </header>
+      <div class="voice-status" id="voice-status"><span></span><strong>Ready</strong></div>
+      <div class="voice-conversation" id="voice-conversation">
+        <div class="voice-message assistant">Research a website, then ask me anything about what Rabbit found.</div>
+      </div>
+      <div class="voice-suggestions" id="voice-suggestions">
+        <button type="button">What does this company do?</button>
+        <button type="button">Who is it for?</button>
+        <button type="button">What does it cost?</button>
+      </div>
+      <form class="voice-text-form" id="voice-text-form">
+        <input id="voice-text-input" type="text" autocomplete="off" placeholder="Ask about the website…" aria-label="Question about the website">
+        <button type="submit" aria-label="Ask question">Ask</button>
+      </form>
+      <p class="voice-note">Answers use only the website pages Rabbit reviewed.</p>
+    </section>
+    <button class="voice-launcher" id="voice-launcher" type="button" aria-label="Activate voice AI" aria-expanded="false">
+      <svg class="voice-mic-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="12" rx="4"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"></path></svg>
+      <span class="voice-launcher-pulse"></span>
+    </button>
+  </aside>
+  <script src="app.js?v=5" defer></script>
+  <script src="voice-assistant.js?v=2" type="module"></script>
 </body>
 </html>

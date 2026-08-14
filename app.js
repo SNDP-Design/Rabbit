@@ -61,6 +61,7 @@ function saveMemory(memory) {
   if (!memory) return 0;
   try {
     localStorage.setItem("rabbit-website-memory-v1", JSON.stringify(memory));
+    window.dispatchEvent(new CustomEvent("rabbit:memory-ready", { detail: { memory } }));
     return memory.pages?.length || 0;
   } catch {
     return 0;
