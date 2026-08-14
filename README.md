@@ -22,6 +22,8 @@ To activate AI synthesis securely, add an encrypted Cloudflare Pages secret name
 
 Rabbit follows sitemap URLs and internal HTML links across the site, prioritizing homepage, product, feature, solution, use-case, customer, pricing, about, documentation, and useful blog pages. A research run is safely capped at 60 public HTML pages and reports pages it could not read. The extracted readable text is returned as a browser-local website memory and normalized knowledge base containing product, problem, capabilities, value proposition, customers, ICP, industries, use cases, pricing, positioning, differentiators, competitors, and source links. Terra makes its intelligence decision from this collective knowledge base, with strongest signals, risks, recommendation, and next questions.
 
+The architecture contracts live in [memory.md](memory.md), [skill.md](skill.md), [agent.md](agent.md), and [intelligence.md](intelligence.md). The deployed function embeds their versioned runtime contract through [knowledge-config.js](functions/api/knowledge-config.js) so the crawler, model handoff, evidence review, and memory builder follow the same design.
+
 ## Safety and honesty
 
 - Local, private, reserved, link-local, metadata-style, credentialed, and nonstandard-port targets are blocked, including redirects.

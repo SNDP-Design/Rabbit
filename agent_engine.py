@@ -27,6 +27,15 @@ MAX_PAGE_BYTES = 900_000
 MAX_TOTAL_TEXT = 3_200_000
 TIMEOUT_SECONDS = 8
 MAX_REDIRECTS = 5
+KNOWLEDGE_ARCHITECTURE = {
+    "version": "1.0",
+    "memory_contract": "memory.md",
+    "skill_contract": "skill.md",
+    "agent_contract": "agent.md",
+    "intelligence_contract": "intelligence.md",
+    "stages": ["crawl", "luna_evidence", "terra_synthesis", "evidence_review", "memory_build"],
+    "persistence": "browser-local MVP memory; server persistence requires a datastore binding",
+}
 
 PAGE_HINTS = {
     "pricing": 100,
@@ -408,13 +417,14 @@ def crawl(company_url: str) -> dict:
         "judgment": decision,
     }
     memory = {
-        "version": 1, "generated_at": now(), "company_url": final_root, "company": company,
+        "version": 1, "architecture": KNOWLEDGE_ARCHITECTURE, "generated_at": now(), "company_url": final_root, "company": company,
         "pages": [{"url": p["url"], "title": p["title"] or p["url"], "description": p["description"], "headings": p["headings"], "text": p["text"]} for p in pages],
         "findings": findings, "knowledge_base": knowledge_base, "decision": decision,
         "crawl": {"pages_reviewed": len(pages), "page_cap": MAX_PAGES, "failures": len(failures)},
     }
     return {
         "status": "complete",
+        "architecture": KNOWLEDGE_ARCHITECTURE,
         "company_url": final_root,
         "company": company,
         "generated_at": now(),
