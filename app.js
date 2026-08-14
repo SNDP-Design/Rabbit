@@ -1,6 +1,6 @@
 const AGENTS = [
   ["CR", "Crawl mapper"], ["PR", "Product analyst"], ["AU", "Audience analyst"],
-  ["PK", "Pricing analyst"], ["MK", "Market analyst"], ["EV", "Evidence reviewer"]
+  ["PK", "Pricing analyst"], ["MK", "Market analyst"], ["EV", "Evidence reviewer"], ["KB", "Memory builder"]
 ];
 
 const $ = (selector) => document.querySelector(selector);
@@ -29,9 +29,10 @@ function safeUrl(value) {
 
 function beginProgress() {
   const stages = [
-    [8, 0, "Mapping high-value pages"], [23, 1, "Understanding the product"],
-    [39, 2, "Identifying customers and ICP"], [55, 3, "Reviewing pricing and business model"],
-    [69, 4, "Placing the company in its market"], [82, 5, "Checking every conclusion against evidence"]
+    [7, 0, "Crawling internal pages"], [21, 1, "Understanding the product"],
+    [36, 2, "Identifying customers and ICP"], [51, 3, "Reviewing pricing and business model"],
+    [66, 4, "Placing the company in its market"], [81, 5, "Checking every conclusion against evidence"],
+    [92, 6, "Saving the website memory"]
   ];
   let stage = 0;
   const update = () => {
@@ -39,7 +40,7 @@ function beginProgress() {
     $("#progress-value").textContent = value + "%";
     $("#progress-bar").style.width = value + "%";
     $("#loading-title").textContent = message;
-    $("#loading-message").textContent = "Rabbit is reading public pages. This can take up to a minute on larger websites.";
+    $("#loading-message").textContent = "Rabbit is reading internal pages and preserving the evidence it finds. Larger websites can take a little longer.";
     renderAgents(agent);
     stage++;
   };
@@ -49,6 +50,21 @@ function beginProgress() {
 
 function escapeHtml(value = "") {
   return value.replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
+}
+
+function renderList(selector, values, emptyText) {
+  const items = (values || []).filter(Boolean);
+  $(selector).innerHTML = items.length ? items.map(value => `<li>${escapeHtml(value)}</li>`).join("") : `<li class="empty-list">${escapeHtml(emptyText)}</li>`;
+}
+
+function saveMemory(memory) {
+  if (!memory) return 0;
+  try {
+    localStorage.setItem("rabbit-website-memory-v1", JSON.stringify(memory));
+    return memory.pages?.length || 0;
+  } catch {
+    return 0;
+  }
 }
 
 function renderResult(result) {
@@ -72,6 +88,18 @@ function renderResult(result) {
   $("#analysis-note").textContent = aiActive
     ? `AI synthesis complete with ${result.analysis_engine}. Every fact was checked against the crawled source text.`
     : (result.analysis_warning || "OpenAI synthesis was unavailable, so Rabbit used its evidence rules.");
+  const decision = result.decision || {};
+  $("#decision-headline").textContent = decision.headline || "No single intelligence decision was established.";
+  $("#decision-confidence").textContent = String(decision.confidence || "low").toUpperCase();
+  $("#decision-recommendation").textContent = decision.recommendation || "Collect more evidence before making a decision.";
+  renderList("#decision-signals", decision.priority_signals, "No strong signal was established.");
+  renderList("#decision-risks", decision.risks, "No material risk was established from the site.");
+  renderList("#decision-questions", decision.next_questions, "No additional question was generated.");
+  $("#decision-evidence").innerHTML = (decision.evidence || []).map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Evidence: ${escapeHtml(source.excerpt)}</a>`).join("");
+  const savedPages = saveMemory(result.memory);
+  $("#memory-status").textContent = savedPages
+    ? `Website memory saved in this browser: ${savedPages} internal pages, ${result.coverage.total} intelligence areas, and the supporting evidence.`
+    : "The report is available for this run, but browser storage was unavailable for saving the memory.";
   $("#findings").innerHTML = result.findings.map(item => {
     const sources = item.evidence.map(source => `<a class="evidence-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.excerpt)}<span>${escapeHtml(source.url)}</span></a>`).join("");
     return `<article class="finding"><div class="finding-top"><h3>${escapeHtml(item.title)}</h3><span class="badge ${item.kind.toLowerCase()}">${item.kind} · ${escapeHtml(item.confidence)}</span></div><p class="finding-value">${escapeHtml(item.value)}</p>${item.note ? `<p class="finding-note">${escapeHtml(item.note)}</p>` : ""}${sources}</article>`;
@@ -114,7 +142,8 @@ form.addEventListener("submit", async event => {
 $("#try-again").addEventListener("click", () => { showState("empty-state"); input.focus(); });
 $("#copy-summary").addEventListener("click", async () => {
   if (!currentResult) return;
-  const text = currentResult.findings.map(item => `${item.title} [${item.kind}]: ${item.value}`).join("\n\n");
+  const decision = currentResult.decision ? `INTELLIGENCE DECISION\n${currentResult.decision.headline}\nRecommendation: ${currentResult.decision.recommendation}\n\n` : "";
+  const text = decision + currentResult.findings.map(item => `${item.title} [${item.kind}]: ${item.value}`).join("\n\n");
   await navigator.clipboard.writeText(text);
   $("#copy-summary").textContent = "Copied";
   setTimeout(() => $("#copy-summary").textContent = "Copy brief", 1400);

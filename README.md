@@ -1,6 +1,6 @@
 # Rabbit
 
-Rabbit is a free, local-first company intelligence web app. Enter a public website and its coordinated research agents read a bounded set of relevant pages, then produce a structured brief with evidence links, confidence, and clearly labelled facts, inferences, and unknowns.
+Rabbit is a free, local-first company intelligence web app. Enter a public website and its coordinated research agents recursively crawl discoverable same-site pages, then produce a structured brief with evidence links, confidence, clearly labelled facts, inferences, and unknowns, plus a practical intelligence decision.
 
 **Live app:** [rabbit-gtm.pages.dev](https://rabbit-gtm.pages.dev/)
 
@@ -18,9 +18,9 @@ The production function uses a bounded two-stage OpenAI workflow: `gpt-5.6-luna`
 
 To activate AI synthesis securely, add an encrypted Cloudflare Pages secret named `OPENAI_API_KEY` to the `rabbit-gtm` project. Do not place the key in the website, repository, or browser. Optional `OPENAI_TERRA_MODEL` and `OPENAI_LUNA_MODEL` variables can change the two model IDs; the defaults are `gpt-5.6-terra` and `gpt-5.6-luna`.
 
-## What the MVP reviews
+## Crawl, memory, and decision
 
-Rabbit prioritizes homepage, product, feature, solution, use-case, customer, pricing, about, documentation, and useful blog pages. A research run is capped at 12 public HTML pages and reports pages it could not read.
+Rabbit follows sitemap URLs and internal HTML links across the site, prioritizing homepage, product, feature, solution, use-case, customer, pricing, about, documentation, and useful blog pages. A research run is safely capped at 60 public HTML pages and reports pages it could not read. The extracted readable text is returned as a browser-local website memory with the findings and evidence, so later decisions can be based on the complete captured research context. The Terra synthesis also creates an intelligence decision with the strongest signals, risks, recommendation, and next questions.
 
 ## Safety and honesty
 

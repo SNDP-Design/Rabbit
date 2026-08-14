@@ -22,9 +22,9 @@ from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parent
 USER_AGENT = "RabbitCompanyResearch/1.0 (+local evidence-first crawler)"
-MAX_PAGES = 12
+MAX_PAGES = 60
 MAX_PAGE_BYTES = 900_000
-MAX_TOTAL_TEXT = 700_000
+MAX_TOTAL_TEXT = 3_200_000
 TIMEOUT_SECONDS = 8
 MAX_REDIRECTS = 5
 
@@ -371,7 +371,7 @@ def crawl(company_url: str) -> dict:
                 link = urldefrag(urljoin(final, href))[0]
                 parsed = urlparse(link)
                 if parsed.scheme in ("http", "https") and same_site(link, host) and link not in queued:
-                    if page_score(link) >= 50:
+                    if not re.search(r"\.(?:css|js|json|xml|txt|csv|pdf|zip|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|mp4|webm)$", urlparse(link).path, re.I):
                         queue.append(link)
                         queued.add(link)
         except ValueError as exc:
@@ -381,14 +381,33 @@ def crawl(company_url: str) -> dict:
         raise ValueError("Rabbit could not read any public HTML pages from this website.")
     findings = analyze(pages, final_root)
     known = sum(1 for item in findings if item["kind"] != "UNKNOWN")
+    company = findings[0]["value"]
+    product = next((item["value"] for item in findings if item["title"] == "Product" and item["kind"] != "UNKNOWN"), "")
+    decision = {
+        "headline": product or "The site does not yet establish a single product decision.",
+        "confidence": "medium" if product else "low",
+        "recommendation": "Validate the product, audience, and pricing signals with customer or internal data before making a high-stakes decision.",
+        "priority_signals": [item["value"] for item in findings if item["kind"] != "UNKNOWN"][:4],
+        "risks": ["The local fallback cannot verify ICP, demand, or competitive strength beyond public website evidence."],
+        "next_questions": ["Which customer segment converts and retains best?", "Which claims are supported by customer or revenue data?"],
+        "evidence": [],
+    }
+    memory = {
+        "version": 1, "generated_at": now(), "company_url": final_root, "company": company,
+        "pages": [{"url": p["url"], "title": p["title"] or p["url"], "description": p["description"], "headings": p["headings"], "text": p["text"]} for p in pages],
+        "findings": findings, "decision": decision,
+        "crawl": {"pages_reviewed": len(pages), "page_cap": MAX_PAGES, "failures": len(failures)},
+    }
     return {
         "status": "complete",
         "company_url": final_root,
-        "company": findings[0]["value"],
+        "company": company,
         "generated_at": now(),
         "duration_seconds": round(time.monotonic() - started, 1),
         "pages": [{"url": p["url"], "title": p["title"] or p["url"]} for p in pages],
         "findings": findings,
+        "decision": decision,
+        "memory": memory,
         "coverage": {"known": known, "unknown": len(findings) - known, "total": len(findings)},
         "failures": failures[:8],
         "limits": {"page_cap": MAX_PAGES, "pages_reviewed": len(pages)},
