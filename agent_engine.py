@@ -40,6 +40,13 @@ PAGE_HINTS = {
     "about": 78,
     "docs": 72,
     "documentation": 72,
+    "learn": 70,
+    "methodology": 66,
+    "resources": 62,
+    "integrations": 76,
+    "industries": 87,
+    "stories": 82,
+    "security": 60,
     "blog": 55,
 }
 
@@ -385,6 +392,8 @@ def crawl(company_url: str) -> dict:
         "coverage": {"known": known, "unknown": len(findings) - known, "total": len(findings)},
         "failures": failures[:8],
         "limits": {"page_cap": MAX_PAGES, "pages_reviewed": len(pages)},
+        "analysis_engine": "evidence-rules",
+        "analysis_warning": "OpenAI synthesis runs in the deployed Cloudflare function; local evidence rules were used.",
     }
 
 

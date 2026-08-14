@@ -65,8 +65,13 @@ function renderResult(result) {
     [result.limits.pages_reviewed, "pages reviewed"],
     [result.coverage.known, "areas established"],
     [result.coverage.unknown, "open questions"],
-    [result.duration_seconds + "s", "research time"]
+    [result.analysis_engine === "evidence-rules" ? "Local" : "OpenAI", "analysis engine"]
   ].map(([value, label]) => `<div class="metric"><strong>${escapeHtml(String(value))}</strong><span>${label}</span></div>`).join("");
+  const aiActive = result.analysis_engine !== "evidence-rules";
+  $("#analysis-note").className = `analysis-note ${aiActive ? "ai-active" : "ai-fallback"}`;
+  $("#analysis-note").textContent = aiActive
+    ? `AI synthesis complete with ${result.analysis_engine}. Every fact was checked against the crawled source text.`
+    : (result.analysis_warning || "OpenAI synthesis was unavailable, so Rabbit used its evidence rules.");
   $("#findings").innerHTML = result.findings.map(item => {
     const sources = item.evidence.map(source => `<a class="evidence-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.excerpt)}<span>${escapeHtml(source.url)}</span></a>`).join("");
     return `<article class="finding"><div class="finding-top"><h3>${escapeHtml(item.title)}</h3><span class="badge ${item.kind.toLowerCase()}">${item.kind} · ${escapeHtml(item.confidence)}</span></div><p class="finding-value">${escapeHtml(item.value)}</p>${item.note ? `<p class="finding-note">${escapeHtml(item.note)}</p>` : ""}${sources}</article>`;

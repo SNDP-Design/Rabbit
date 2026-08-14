@@ -12,6 +12,12 @@ Rabbit is a free, local-first company intelligence web app. Enter a public websi
 
 Rabbit uses the Python standard library locally and a matching Cloudflare Pages Function in production. It needs no API key, paid service, database, or account for visitors.
 
+## OpenAI synthesis
+
+The production function can use one bounded `gpt-5-mini` call to distill all successfully crawled pages into the structured brief. Every factual evidence excerpt is checked against the retrieved source text before it is shown. If OpenAI is unavailable or not configured, Rabbit visibly falls back to its local evidence rules.
+
+To activate AI synthesis securely, add an encrypted Cloudflare Pages secret named `OPENAI_API_KEY` to the `rabbit-gtm` project. Do not place the key in the website, repository, or browser. An optional `OPENAI_MODEL` variable can change the model; the default is `gpt-5-mini`.
+
 ## What the MVP reviews
 
 Rabbit prioritizes homepage, product, feature, solution, use-case, customer, pricing, about, documentation, and useful blog pages. A research run is capped at 12 public HTML pages and reports pages it could not read.
