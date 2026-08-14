@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rabbit turns a public website into evidence-backed company intelligence.">
+  <title>Rabbit — Company intelligence</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Research agents">
+      <div class="brand"><span class="brand-mark">R</span><span>Rabbit</span></div>
+      <div class="workspace-label">AUTONOMOUS RESEARCH</div>
+      <nav class="agents" id="agents" aria-label="Agent progress"></nav>
+      <form class="url-form" id="url-form">
+        <label for="url-input">Website URL</label>
+        <div class="url-control">
+          <input id="url-input" name="url" type="text" inputmode="url" autocomplete="url" placeholder="company.com" aria-describedby="url-help" required>
+          <button id="search-button" type="submit" aria-label="Research website" title="Research website">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+          </button>
+        </div>
+        <span id="url-help">Public websites only</span>
+      </form>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">COMPANY INTELLIGENCE</span>
+          <h1 id="page-title">Research workspace</h1>
+        </div>
+        <div class="run-state" id="run-state"><span></span>Ready</div>
+      </header>
+
+      <section class="empty-state" id="empty-state">
+        <div class="orb"><span></span><span></span><span></span></div>
+        <span class="eyebrow">START WITH A WEBSITE</span>
+        <h2>Understand any company<br>from the outside in.</h2>
+        <p>Rabbit reads the pages that matter, coordinates specialist agents, and turns public website evidence into a structured company brief.</p>
+        <div class="coverage-list">
+          <span>Product & positioning</span><span>Customers & ICP</span><span>Pricing & market</span><span>Evidence & unknowns</span>
+        </div>
+      </section>
+
+      <section class="loading-state hidden" id="loading-state" aria-live="polite">
+        <div class="loading-head">
+          <div><span class="eyebrow">LIVE RESEARCH RUN</span><h2 id="loading-title">Reading the website</h2></div>
+          <div class="progress-ring"><span id="progress-value">0%</span></div>
+        </div>
+        <div class="progress-track"><span id="progress-bar"></span></div>
+        <p id="loading-message">Mapping the pages that matter most…</p>
+        <div class="skeleton-grid"><div></div><div></div><div></div><div></div></div>
+      </section>
+
+      <section class="results hidden" id="results" aria-live="polite">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <span class="eyebrow">RESEARCH COMPLETE</span>
+            <h2 id="company-name"></h2>
+            <p id="company-summary"></p>
+          </div>
+          <div class="coverage-score"><strong id="coverage-score">0%</strong><span>coverage</span></div>
+        </div>
+        <div class="metrics" id="metrics"></div>
+        <div class="section-heading"><div><span class="eyebrow">STRUCTURED BRIEF</span><h2>What Rabbit learned</h2></div><button class="quiet-button" id="copy-summary" type="button">Copy brief</button></div>
+        <div class="findings" id="findings"></div>
+        <div class="section-heading sources-heading"><div><span class="eyebrow">SOURCE MAP</span><h2>Pages reviewed</h2></div></div>
+        <div class="sources" id="sources"></div>
+        <p class="boundary">Conclusions are based only on public website content. Inferences are labelled and should be validated with customer or internal data.</p>
+      </section>
+
+      <section class="error-state hidden" id="error-state" aria-live="assertive">
+        <div class="error-icon">!</div><span class="eyebrow">RESEARCH STOPPED</span><h2>Rabbit couldn’t inspect that site.</h2><p id="error-message"></p><button id="try-again" type="button">Try another URL</button>
+      </section>
+    </main>
+  </div>
+  <script src="app.js?v=2" defer></script>
+</body>
+</html>

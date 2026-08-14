@@ -1,0 +1,10 @@
+{
+  "name": "rabbit",
+  "version": "4.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.mjs",
+    "start": "python3 agent_engine.py --serve --port 3000"
+  }
+}
